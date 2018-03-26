@@ -9,6 +9,7 @@ Includes:
 
 __author__= "Paul Hancock"
 
+
 import numpy as np
 import math
 
@@ -18,6 +19,7 @@ from catalogs import load_table, table_to_source_list
 # join the Aegean logger
 import logging
 log = logging.getLogger('Aegean')
+
 
 cc2fwhm = (2 * math.sqrt(2 * math.log(2)))
 fwhm2cc = 1/cc2fwhm
@@ -134,7 +136,7 @@ def pairwise_ellpitical_binary(sources, eps, far=None):
     return distances
 
 
-def regroup(catalog, eps, far=None, dist=norm_dist):
+def regroup(catalog, eps, far=None, dist=sky_dist):
     """
     Regroup the islands of a catalog according to their normalised distance.
     Return a list of island groups. Sources have their (island,source) parameters relabeled.
@@ -173,7 +175,7 @@ def regroup(catalog, eps, far=None, dist=norm_dist):
     else:
         try:
             srccat = catalog
-            _ = catalog[0].ra, catalog[0].dec, catalog[0].a, catalog[0].b, catalog[0].pa, catalog[0].peak_flux
+            _ = catalog[0].ra_str, catalog[0].err_ra, catalog[0].dec_str, catalog[0].err_dec, catalog[0].int_flux, catalog[0].err_int_flux
 
         except AttributeError as e:
             log.error("catalog is not understood.")
