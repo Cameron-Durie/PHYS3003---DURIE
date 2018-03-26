@@ -38,11 +38,11 @@ def main():
     print(tab)
 
     cat = table_to_source_list(tab, src_type=OutputSource)
+    print(cat)
 
-    regroup(cat, 10, far=None, dist=sky_dist)
+    islands = regroup(cat, 10, far=None, dist=sky_dist)
 
     print(islands)
-
 
 
 
