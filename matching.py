@@ -7,15 +7,16 @@ Matching program using Argean Tools
 
 __author__= "Cameron Durie"
 
+# import
 import numpy as np
 import math
+import time
+import glob
 
 from cluster import sky_dist, regroup
-from catalogs import load_table,write_table, table_to_source_list
-from astropy import table
-from models import OutputSource
+from catalogs import write_catalog, write_table, table_to_source_list
+from astropy.table import vstack, table
 
-import time
 
 # join the Aegean logger
 import logging
@@ -24,32 +25,67 @@ log = logging.getLogger('Aegean')
 
 def main():
 
-    tab = table.Table.read('Data_set_1/epoch00.csv');
-    print(tab)
+    # record start time
+    start_time = time.time()
+
+
+    # load tables
+    filenames = glob.glob('./Data_set_2_small' + "/*.csv")
+    files = []
+    for filename in filenames:
+        files.append(table.Table.read(filename))
+
+
+    print(files)
+
+    tab0 = table.Table.read('Data_set_2_small/epoch00.csv');
+    print(tab0)
+    tab1 = table.Table.read('Data_set_2_small/epoch01.csv');
+    print(tab1)
 
     # rename columns
-    tab.rename_column("RA(deg)","ra_str")
-    tab.rename_column("err_RA(deg)", "err_ra")
-    tab.rename_column("Dec(deg)", "dec_str")
-    tab.rename_column("err_Dec(deg)", "err_dec")
-    tab.rename_column("Flux(Jy)", "int_flux")
-    tab.rename_column("err_Flux(Jy)", "err_int_flux")
+    tab0.rename_column("# src", "source")
+    tab0.rename_column("RA(deg)","ra")
+    tab0.rename_column("err_RA(deg)", "err_ra")
+    tab0.rename_column("Dec(deg)", "dec")
+    tab0.rename_column("err_Dec(deg)", "err_dec")
+    tab0.rename_column("Flux(Jy)", "peak_flux")
+    tab0.rename_column("err_Flux(Jy)", "err_peak_flux")
 
-    print(tab)
+    tab1.rename_column("# src", "source")
+    tab1.rename_column("RA(deg)", "ra")
+    tab1.rename_column("err_RA(deg)", "err_ra")
+    tab1.rename_column("Dec(deg)", "dec")
+    tab1.rename_column("err_Dec(deg)", "err_dec")
+    tab1.rename_column("Flux(Jy)", "peak_flux")
+    tab1.rename_column("err_Flux(Jy)", "err_peak_flux")
 
-    cat = table_to_source_list(tab, src_type=OutputSource)
+    print(tab0)
+    print(tab1)
+
+    frames = vstack([tab0, tab1])
+    print("print frames")
+    print(frames)
+
+    write_table(frames,"results/t1.csv")
+
+    cat = table_to_source_list(frames)
     print(cat)
 
-    islands = regroup(cat, 10, far=None, dist=sky_dist)
 
+    islands = regroup(cat, 0.094, far=None, dist=sky_dist)
     print(islands)
+
+    for t in range(len(islands)):
+        print(len(islands[t]))
+
+    print("--- %s seconds ---" % (time.time() - start_time))
+
 
 
 
 if __name__ == '__main__':
     main()
-
-
 
 
 

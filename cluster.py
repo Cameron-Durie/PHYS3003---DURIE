@@ -223,8 +223,8 @@ def regroup(catalog, eps, far=None, dist=sky_dist):
     # now that we have the groups, we relabel the sources to have (island,component) in flux order
     # note that the order of sources within an island list is not changed - just their labels
     for isle in groups.keys():
-        for comp, src in enumerate(sorted(groups[isle], key=lambda x: -1*x.peak_flux)):
-            src.island = isle
-            src.source = comp
+        #for comp, src in enumerate(sorted(groups[isle], key=lambda x: -1*x.peak_flux)):
+        #    src.island = isle
+        #    src.source = comp
         islands.append(groups[isle])
     return islands
