@@ -95,7 +95,7 @@ def dist_3d(src1, src2):
     if src1 == src2:
         return 0
 
-    seperation = (((src1.ra - src2.ra)**2)/(src1.err_ra**2 + src1.err_ra**2) + ((src1.dec - src2.dec)**2)/(src1.err_dec**2 + src1.err_dec**2) + ((src1.peak_flux - src2.peak_flux)**2)/(src1.err_peak_flux**2 + src1.err_peak_flux**2))**(1/2)
+    seperation = (((src1.ra - src2.ra)**2)/((src1.err_ra**2 + src1.err_ra**2)**0.5) + ((src1.dec - src2.dec)**2)/((src1.err_dec**2 + src1.err_dec**2)**0.5) + (((src1.peak_flux - src2.peak_flux)**2)/((src1.err_peak_flux**2 + src1.err_peak_flux**2)**0.5)))**0.5
     return seperation
 
 

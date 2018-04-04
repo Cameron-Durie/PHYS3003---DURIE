@@ -28,10 +28,10 @@ def main():
     # record start time
     start_time = time.time()
 
-    hmany = 70  # How many csv files to load
+    hmany = 50  # How many csv files to load
 
 
-    folder = './Data_set_2_small/'  # Target folder for extracting csv files
+    folder = './Data_set_1/'  # Target folder for extracting csv files
     files = []  # To store list of target csv files
     epoch = 0
 
@@ -42,9 +42,9 @@ def main():
             epoch += 1
         else:
             break
-
     print(files)
 
+    epoch = 0
 
     # load tables and rename colomns
     for filename in files:
@@ -59,33 +59,40 @@ def main():
         tab.rename_column("Flux(Jy)", "peak_flux")
         tab.rename_column("err_Flux(Jy)", "err_peak_flux")
 
-        print(tab)
+        # add epoch colomn
+        tab['island'] = epoch
 
+        if epoch == 0:
+            frames = tab
+            epoch += 1
+        else:
+            frames = vstack([frames, tab])
+            epoch += 1
 
-
-
-
-
-    frames = vstack([tab0, tab1])
-    print("print frames")
     print(frames)
-
-    write_table(frames,"results/t1.csv")
 
     cat = table_to_source_list(frames)
     print(cat)
 
-    # 30, 0.094
+    # 1.7, 1.1
 
-    islands = regroup(cat, 0.094, far=None, dist=dist_3d)
+    islands = regroup(cat, 1.7, far=None, dist=dist_3d)
     print(islands)
 
     for t in range(len(islands)):
         print(len(islands[t]))
 
+    total_count = len(islands)
+    print("\n%d islands created" %total_count)
 
+    successes = 0
+    i = 0
+    for i in range(len(islands)):
+        if len(islands[i]) == hmany:
+            successes += 1
 
-
+    percentage_solved = 100*(successes)/(len(tab))
+    print("Success rate = %f%%" %percentage_solved)
 
     print("--- %s seconds ---" % (time.time() - start_time))
 
