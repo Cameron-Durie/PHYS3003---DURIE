@@ -11,7 +11,7 @@ __author__= "Cameron Durie"
 import numpy as np
 import math
 import time
-import glob
+import glob,os
 
 from cluster import sky_dist, regroup, dist_3d
 from catalogs import write_catalog, write_table, table_to_source_list
@@ -28,40 +28,43 @@ def main():
     # record start time
     start_time = time.time()
 
+    hmany = 70  # How many csv files to load
 
-    # load tables
-    filenames = glob.glob('./Data_set_2_small' + "/*.csv")
-    files = []
-    for filename in filenames:
-        files.append(table.Table.read(filename))
 
+    folder = './Data_set_2_small/'  # Target folder for extracting csv files
+    files = []  # To store list of target csv files
+    epoch = 0
+
+    os.chdir("%s" %folder)
+    for file in glob.glob("*.csv"):
+        if epoch < hmany:
+            files.append(file)
+            epoch += 1
+        else:
+            break
 
     print(files)
 
-    tab0 = table.Table.read('Data_set_2_small/epoch00.csv');
-    print(tab0)
-    tab1 = table.Table.read('Data_set_2_small/epoch01.csv');
-    print(tab1)
 
-    # rename columns
-    tab0.rename_column("# src", "source")
-    tab0.rename_column("RA(deg)","ra")
-    tab0.rename_column("err_RA(deg)", "err_ra")
-    tab0.rename_column("Dec(deg)", "dec")
-    tab0.rename_column("err_Dec(deg)", "err_dec")
-    tab0.rename_column("Flux(Jy)", "peak_flux")
-    tab0.rename_column("err_Flux(Jy)", "err_peak_flux")
+    # load tables and rename colomns
+    for filename in files:
+        tab = table.Table.read("%s" %filename)
 
-    tab1.rename_column("# src", "source")
-    tab1.rename_column("RA(deg)", "ra")
-    tab1.rename_column("err_RA(deg)", "err_ra")
-    tab1.rename_column("Dec(deg)", "dec")
-    tab1.rename_column("err_Dec(deg)", "err_dec")
-    tab1.rename_column("Flux(Jy)", "peak_flux")
-    tab1.rename_column("err_Flux(Jy)", "err_peak_flux")
+        # rename columns
+        tab.rename_column("# src", "source")
+        tab.rename_column("RA(deg)", "ra")
+        tab.rename_column("err_RA(deg)", "err_ra")
+        tab.rename_column("Dec(deg)", "dec")
+        tab.rename_column("err_Dec(deg)", "err_dec")
+        tab.rename_column("Flux(Jy)", "peak_flux")
+        tab.rename_column("err_Flux(Jy)", "err_peak_flux")
 
-    print(tab0)
-    print(tab1)
+        print(tab)
+
+
+
+
+
 
     frames = vstack([tab0, tab1])
     print("print frames")
@@ -80,8 +83,11 @@ def main():
     for t in range(len(islands)):
         print(len(islands[t]))
 
-    print("--- %s seconds ---" % (time.time() - start_time))
 
+
+
+
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 
 
