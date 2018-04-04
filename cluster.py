@@ -87,6 +87,18 @@ def sky_dist(src1, src2):
     return gcd(src1.ra, src1.dec, src2.ra, src2.dec) # degrees
 
 
+def dist_3d(src1, src2):
+    """
+    Calculate the seperation in standard deviations between sources based on their sky position and relative flux.
+    """
+
+    if src1 == src2:
+        return 0
+
+    seperation = (((src1.ra - src2.ra)**2)/(src1.err_ra**2 + src1.err_ra**2) + ((src1.dec - src2.dec)**2)/(src1.err_dec**2 + src1.err_dec**2) + ((src1.peak_flux - src2.peak_flux)**2)/(src1.err_peak_flux**2 + src1.err_peak_flux**2))**(1/2)
+    return seperation
+
+
 def pairwise_ellpitical_binary(sources, eps, far=None):
     """
     Do a pairwise comparison of all sources and determine if they have a normalized distance within
@@ -136,7 +148,7 @@ def pairwise_ellpitical_binary(sources, eps, far=None):
     return distances
 
 
-def regroup(catalog, eps, far=None, dist=sky_dist):
+def regroup(catalog, eps, far=None, dist=None):
     """
     Regroup the islands of a catalog according to their normalised distance.
     Return a list of island groups. Sources have their (island,source) parameters relabeled.

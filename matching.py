@@ -13,7 +13,7 @@ import math
 import time
 import glob
 
-from cluster import sky_dist, regroup
+from cluster import sky_dist, regroup, dist_3d
 from catalogs import write_catalog, write_table, table_to_source_list
 from astropy.table import vstack, table
 
@@ -72,8 +72,9 @@ def main():
     cat = table_to_source_list(frames)
     print(cat)
 
+    # 30, 0.094
 
-    islands = regroup(cat, 0.094, far=None, dist=sky_dist)
+    islands = regroup(cat, 0.094, far=None, dist=dist_3d)
     print(islands)
 
     for t in range(len(islands)):
