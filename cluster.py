@@ -90,6 +90,16 @@ def sky_dist(src1, src2):
 def dist_3d(src1, src2):
     """
     Calculate the seperation in standard deviations between sources based on their sky position and relative flux.
+
+    Parameters
+    ----------
+    src1, src2 : object
+        Two sources to check. Objects must have parameters (ra,dec) in degrees.
+
+    Returns
+    -------
+    separation : float
+        The separation in standard deviations between the two sources.
     """
 
     if src1 == src2:
