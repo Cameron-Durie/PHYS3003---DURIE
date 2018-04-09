@@ -73,8 +73,8 @@ def main():
     print(cat)
 
     stage1 = []
-    a1 = 0.01  #from
-    b1 = 0.5  #to
+    a1 = 0.5  #from
+    b1 = 4.0  #to
     c1 = 0.01  #increments
     test_area = np.arange(a1,b1,c1)
     print(test_area)
