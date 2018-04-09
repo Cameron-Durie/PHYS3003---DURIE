@@ -27,7 +27,7 @@ def main():
     # record start time
     start_time = time.time()
 
-    hmany = 50  # How many csv files to load
+    hmany = 10  # How many csv files to load
 
     folder = './Data_set_2_small/'  # Target folder for extracting csv files
 
@@ -105,8 +105,8 @@ def main():
     badies = [x for x in cat if x not in goodies]  # slow alternative
     badies = sorted(badies)
 
-    write_catalog("./results/goodies1", goodies, fmt='csv')
-    write_catalog("./results/badies1", badies, fmt='csv')
+    write_catalog("./results/goodies1_%depochs" %hmany, goodies, fmt='csv')
+    write_catalog("./results/badies1_%depochs" %hmany, badies, fmt='csv')
 
     goodies_cat = sorted(goodies)
     print(goodies_cat)
@@ -150,8 +150,8 @@ def main():
     badies = [x for x in new_cat1 if x not in goodies]  # slow alternative
     badies = sorted(badies)
 
-    write_catalog("./results/goodies2", goodies, fmt='csv')
-    write_catalog("./results/badies2", badies, fmt='csv')
+    write_catalog("./results/goodies2_%depochs" %hmany, goodies, fmt='csv')
+    write_catalog("./results/badies2_%depochs" %hmany, badies, fmt='csv')
 
     goodies_cat = sorted(goodies)
     print(goodies_cat)
@@ -184,8 +184,6 @@ def main():
     #        else:
     #            badies.append(islands[i])
 
-    previous_success2 = successes
-
     goodies = sorted(goodies)
     #    badies = sorted(badies)
 
@@ -198,8 +196,8 @@ def main():
     badies = [x for x in new_cat2 if x not in goodies]  # slow alternative
     badies = sorted(badies)
 
-    write_catalog("./results/goodies3", goodies, fmt='csv')
-    write_catalog("./results/badies3", badies, fmt='csv')
+    write_catalog("./results/goodies3_%depochs" %hmany, goodies, fmt='csv')
+    write_catalog("./results/badies3_%depochs" %hmany, badies, fmt='csv')
 
     goodies_cat = sorted(goodies)
     print(goodies_cat)
@@ -209,20 +207,110 @@ def main():
     print("\nSuccess rate = %f%%" % percentage_solved)
 
 
-
-    ###################### STAGE4 ######################
+    ################## STAGE 4 ####################
 
     new_cat3 = badies
+    islands = regroup(new_cat3, 3.5, far=None, dist=best_dist)
+
+    for t in range(len(islands)):
+        print(len(islands[t]))
+
+    total_count = len(islands)
+    print("%d islands created\n" % total_count)
+
+    goodies = []
+    badies = []
+
+    for i in range(len(islands)):
+        islands[i] = sorted(islands[i])
+        if len(islands[i]) == hmany:
+            successes += 1
+            goodies.append(islands[i])
+    #        else:
+    #            badies.append(islands[i])
+
+    goodies = sorted(goodies)
+    #    badies = sorted(badies)
+
+    for i in range(len(goodies)):
+        print(goodies[i])
+
+    goodies = np.ravel(goodies)
+    #    badies = np.ravel(badies)
+
+    badies = [x for x in new_cat3 if x not in goodies]  # slow alternative
+    badies = sorted(badies)
+
+    write_catalog("./results/goodies5_%depochs" %hmany, goodies, fmt='csv')
+    write_catalog("./results/badies5_%depochs" %hmany, badies, fmt='csv')
+
+    goodies_cat = sorted(goodies)
+    print(goodies_cat)
+    print(badies)
+
+    percentage_solved = 100 * (successes) / (len(tab))
+    print("\nSuccess rate = %f%%" % percentage_solved)
+
+    ################## STAGE 5 ####################
+
+    new_cat4 = badies
+    islands = regroup(new_cat4, 0.47, far=None, dist=best_dist)
+
+    for t in range(len(islands)):
+        print(len(islands[t]))
+
+    total_count = len(islands)
+    print("%d islands created\n" % total_count)
+
+    goodies = []
+    badies = []
+
+    for i in range(len(islands)):
+        islands[i] = sorted(islands[i])
+        if len(islands[i]) == hmany:
+            successes += 1
+            goodies.append(islands[i])
+    #        else:
+    #            badies.append(islands[i])
+
+    previous_success2 = successes
+
+    goodies = sorted(goodies)
+    #    badies = sorted(badies)
+
+    for i in range(len(goodies)):
+        print(goodies[i])
+
+    goodies = np.ravel(goodies)
+    #    badies = np.ravel(badies)
+
+    badies = [x for x in new_cat3 if x not in goodies]  # slow alternative
+    badies = sorted(badies)
+
+    write_catalog("./results/goodies5_%depochs" % hmany, goodies, fmt='csv')
+    write_catalog("./results/badies5_%depochs" % hmany, badies, fmt='csv')
+
+    goodies_cat = sorted(goodies)
+    print(goodies_cat)
+    print(badies)
+
+    percentage_solved = 100 * (successes) / (len(tab))
+    print("\nSuccess rate = %f%%" % percentage_solved)
+
+    """
+    ###################### STAGE5 ######################
+
+    new_cat4 = badies
 
     stage2 = []
-    a1 = 0.5  #from
-    b1 = 10.0  #to
+    a1 = 0.2  #from
+    b1 = 5.0  #to
     c1 = 0.01  #increments
     test_area = np.arange(a1,b1,c1)
     print(test_area)
 
     for eps in test_area:
-        islands = regroup(new_cat3, eps, far=None, dist=best_dist)
+        islands = regroup(new_cat4, eps, far=None, dist=best_dist)
 
         for t in range(len(islands)):
             print(len(islands[t]))
@@ -276,7 +364,7 @@ def main():
         csv_writer.writerow(['eps','success','islands_created'])
         for line in range(len(stage2)):
             csv_writer.writerow(stage2[line])
-
+    """
 
 
 
