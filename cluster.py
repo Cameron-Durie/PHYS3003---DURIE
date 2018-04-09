@@ -82,8 +82,6 @@ def sky_dist(src1, src2):
     :func:`AegeanTools.angle_tools.gcd`
     """
 
-    if src1 == src2:
-        return 0
     return gcd(src1.ra, src1.dec, src2.ra, src2.dec) # degrees
 
 
@@ -105,6 +103,25 @@ def dist_3d(src1, src2):
     seperation = (((src1.ra - src2.ra)**2)/((src1.err_ra**2 + src1.err_ra**2)**0.5) + ((src1.dec - src2.dec)**2)/((src1.err_dec**2 + src1.err_dec**2)**0.5) + (((src1.peak_flux - src2.peak_flux)**2)/((src1.err_peak_flux**2 + src1.err_peak_flux**2)**0.5)))**0.5
     return seperation
 
+
+def best_dist(src1, src2):
+    """
+    Calculate the seperation in standard deviations between sources based on their sky position and relative flux using greater circle method.
+
+    Parameters
+    ----------
+    src1, src2 : object
+        Two sources to check. Objects must have parameters (ra,dec) in degrees.
+
+    Returns
+    -------
+    separation : float
+        The separation in standard deviations between the two sources.
+    """
+    ra_error1 = src1.err_ra*(np.cos(np.deg2rad(src1.dec)))
+    ra_error2 = src2.err_ra*(np.cos(np.deg2rad(src2.dec)))
+    seperation = ((((gcd(src1.ra, src1.dec, src2.ra, src2.dec))**2) / ((ra_error1**2 + ra_error2**2 + src1.err_dec**2 + src2.err_dec**2)**0.5)) + (((src1.peak_flux - src2.peak_flux) ** 2) / ((src1.err_peak_flux ** 2 + src1.err_peak_flux ** 2) ** 0.5))) ** 0.5
+    return seperation
 
 def pairwise_ellpitical_binary(sources, eps, far=None):
     """

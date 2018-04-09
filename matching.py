@@ -14,7 +14,7 @@ import math
 import time
 import glob,os
 
-from cluster import sky_dist, regroup, dist_3d
+from cluster import sky_dist, regroup, dist_3d, best_dist
 from catalogs import write_catalog, write_table, table_to_source_list
 from astropy.table import vstack, table
 
@@ -27,7 +27,7 @@ def main():
     # record start time
     start_time = time.time()
 
-    hmany = 50  # How many csv files to load
+    hmany = 25  # How many csv files to load
 
     folder = './Data_set_2_small/'  # Target folder for extracting csv files
 
@@ -73,9 +73,9 @@ def main():
     print(cat)
 
     stage1 = []
-    a1 = 0.01
-    b1 = 0.5
-    c1 = 0.001
+    a1 = 0.01  #from
+    b1 = 0.5  #to
+    c1 = 0.01  #increments
     test_area = np.arange(a1,b1,c1)
     print(test_area)
 
