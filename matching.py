@@ -9,6 +9,7 @@ __author__= "Cameron Durie"
 
 # import
 import numpy as np
+import csv
 import math
 import time
 import glob,os
@@ -26,11 +27,9 @@ def main():
     # record start time
     start_time = time.time()
 
-    hmany = 3  # How many csv files to load
-
+    hmany = 50  # How many csv files to load
 
     folder = './Data_set_2_small/'  # Target folder for extracting csv files
-
 
     files = []  # To store list of target csv files
     epoch = 0
@@ -43,7 +42,6 @@ def main():
         else:
             break
     print(files)
-
     epoch = 0
 
     # load tables
@@ -64,49 +62,83 @@ def main():
 
         if epoch == 0:
             frames = tab
-            epoch += 1
         else:
             frames = vstack([frames, tab])
-            epoch += 1
+        epoch += 1
 
     print(frames)
-    write_table(frames,"./results/frames1.csv")
+    write_table(frames,"./results/frames%d.csv" %hmany)
 
     cat = table_to_source_list(frames)
     print(cat)
 
-    # Data_set_2_small
-    # for 2 epochs eps =  1.7  for dist_3d,  eps =  0.112  for sky_dist --> 64.36% ,  64.36% (dist_3d was quicker:  0.068sec vs. 0.80sec)
-    # for 25 epochs eps = 1.9  for dist 3d,  eps =  0.09  for sky dist  --> 47.52% ,  39.60% (dist 3d was quicker:  0.933sec vs. 1.86sec)
-    # for 50 epochs eps = 1.72 for dist_3d,  eps =  0.112  for sky_dist --> 50.495% , 34.653% (dist_3d was quicker: 2.185sec vs. 5.792sec
+    stage1 = []
+    a1 = 0.01
+    b1 = 0.5
+    c1 = 0.001
+    test_area = np.arange(a1,b1,c1)
+    print(test_area)
 
+    for eps in test_area:
+        islands = regroup(cat, eps, far=None, dist=sky_dist)
 
-    islands = regroup(cat, 1.72, far=None, dist=dist_3d)
-    print(islands)
+        for t in range(len(islands)):
+            print(len(islands[t]))
 
-    for t in range(len(islands)):
-        print(len(islands[t]))
+        total_count = len(islands)
+        print("%d islands created\n" % total_count)
 
-    total_count = len(islands)
-    print("%d islands created\n" %total_count)
+        goodies = []
+        badies = []
+        successes = 0
 
-    goodies = []
-    successes = 0
-
-    for i in range(len(islands)):
-        if len(islands[i]) == hmany:
-            successes += 1
+        for i in range(len(islands)):
             islands[i] = sorted(islands[i])
-            goodies.append(islands[i])
+            if len(islands[i]) == hmany:
+                successes += 1
+                goodies.append(islands[i])
+        #        else:
+        #            badies.append(islands[i])
 
-    goodies = sorted(goodies)
+        goodies = sorted(goodies)
+        #    badies = sorted(badies)
 
+        for i in range(len(goodies)):
+            print(goodies[i])
 
-    for i in range(len(goodies)):
-        print(goodies[i])
-    goodies = np.ravel(goodies)
-    print(type(goodies[i]))
-    write_catalog("./results/goodies",goodies, fmt='csv')
+        goodies = np.ravel(goodies)
+        #    badies = np.ravel(badies)
+
+        #badies = [x for x in cat if x not in goodies]  # slow alternative
+        badies = sorted(badies)
+
+        write_catalog("./results/goodies", goodies, fmt='csv')
+        #write_catalog("./results/badies", badies, fmt='csv')
+
+        goodies_cat = sorted(goodies)
+        #print(goodies_cat)
+        #print(badies)
+
+        percentage_solved = 100 * (successes) / (len(tab))
+        print("\nSuccess rate = %f%%" % percentage_solved)
+
+        print("--- %s seconds ---" % (time.time() - start_time))
+        print(eps)
+        print("-->")
+        print(b1)
+
+        alt_point = [eps, percentage_solved, total_count]
+        stage1.append(alt_point)
+
+    for i in range(len(stage1)):
+        print(stage1[i])
+
+    with open("./results/stages/stage1_eps=%.1f-%.1f_by_%.3f_with_%d_epochs.csv" %(a1, b1, c1, hmany), 'w') as graph_data:
+        csv_writer = csv.writer(graph_data, delimiter=',')
+        csv_writer.writerow(['eps','success','islands_created'])
+        for line in range(len(stage1)):
+            csv_writer.writerow(stage1[line])
+
 
     percentage_solved = 100*(successes)/(len(tab))
     print("\nSuccess rate = %f%%" %percentage_solved)

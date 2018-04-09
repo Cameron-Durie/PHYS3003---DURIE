@@ -102,9 +102,6 @@ def dist_3d(src1, src2):
         The separation in standard deviations between the two sources.
     """
 
-    if src1 == src2:
-        return 0
-
     seperation = (((src1.ra - src2.ra)**2)/((src1.err_ra**2 + src1.err_ra**2)**0.5) + ((src1.dec - src2.dec)**2)/((src1.err_dec**2 + src1.err_dec**2)**0.5) + (((src1.peak_flux - src2.peak_flux)**2)/((src1.err_peak_flux**2 + src1.err_peak_flux**2)**0.5)))**0.5
     return seperation
 
@@ -230,6 +227,8 @@ def regroup(catalog, eps, far=None, dist=None):
             rafar = far / np.cos(np.radians(s1.dec))
             for s2 in groups[g]:
                 if abs(s2.ra - s1.ra) > rafar:
+                    continue
+                if s2.island == s1.island: # Stops sources from the same epoch being matched
                     continue
                 if dist(s1, s2) < eps:
                     groups[g].append(s1)
