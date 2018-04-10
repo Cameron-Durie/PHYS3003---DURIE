@@ -27,7 +27,7 @@ def main():
     # record start time
     start_time = time.time()
 
-    hmany = 10  # How many csv files to load
+    hmany = 50  # How many csv files to load
 
     folder = './Data_set_2_small/'  # Target folder for extracting csv files
 
@@ -297,20 +297,69 @@ def main():
     percentage_solved = 100 * (successes) / (len(tab))
     print("\nSuccess rate = %f%%" % percentage_solved)
 
-    """
-    ###################### STAGE5 ######################
 
-    new_cat4 = badies
+
+    ################## STAGE 6 ####################
+
+    new_cat5 = badies
+    islands = regroup(new_cat5, 0.15, far=None, dist=sky_dist)
+
+    for t in range(len(islands)):
+        print(len(islands[t]))
+
+    total_count = len(islands)
+    print("%d islands created\n" % total_count)
+
+    goodies = []
+    badies = []
+
+    for i in range(len(islands)):
+        islands[i] = sorted(islands[i])
+        if len(islands[i]) == hmany:
+            successes += 1
+            goodies.append(islands[i])
+    #        else:
+    #            badies.append(islands[i])
+
+    previous_success2 = successes
+
+    goodies = sorted(goodies)
+    #    badies = sorted(badies)
+
+    for i in range(len(goodies)):
+        print(goodies[i])
+
+    goodies = np.ravel(goodies)
+    #    badies = np.ravel(badies)
+
+    badies = [x for x in new_cat4 if x not in goodies]  # slow alternative
+    badies = sorted(badies)
+
+    write_catalog("./results/goodies6_%depochs" % hmany, goodies, fmt='csv')
+    write_catalog("./results/badies6_%depochs" % hmany, badies, fmt='csv')
+
+    goodies_cat = sorted(goodies)
+    print(goodies_cat)
+    print(badies)
+
+    percentage_solved = 100 * (successes) / (len(tab))
+    print("\nSuccess rate = %f%%" % percentage_solved)
+
+
+    """
+    ###################### STAGE Iteration ######################
+
+    new_cat5 = badies
 
     stage2 = []
-    a1 = 0.2  #from
-    b1 = 5.0  #to
-    c1 = 0.01  #increments
+    a1 = 0.01  #from
+    b1 = 0.2  #to
+    c1 = 0.001  #increments
     test_area = np.arange(a1,b1,c1)
     print(test_area)
 
     for eps in test_area:
-        islands = regroup(new_cat4, eps, far=None, dist=best_dist)
+        islands = regroup(new_cat5, eps, far=None, dist=sky_dist)
 
         for t in range(len(islands)):
             print(len(islands[t]))
@@ -364,7 +413,6 @@ def main():
         csv_writer.writerow(['eps','success','islands_created'])
         for line in range(len(stage2)):
             csv_writer.writerow(stage2[line])
-    """
 
 
 
@@ -372,7 +420,7 @@ def main():
     print("\nSuccess rate = %f%%" %percentage_solved)
 
     print("--- %s seconds ---" % (time.time() - start_time))
-
+    """
 
 
 if __name__ == '__main__':
