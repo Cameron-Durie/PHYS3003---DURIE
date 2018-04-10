@@ -90,8 +90,8 @@ def main():
         if len(islands[i]) == hmany:
             successes += 1
             goodies.append(islands[i])
-    #        else:
-    #            badies.append(islands[i])
+    #    else:
+    #       badies.append(islands[i])
 
     goodies = sorted(goodies)
     #    badies = sorted(badies)
