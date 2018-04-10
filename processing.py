@@ -1,7 +1,30 @@
+#! /usr/bin/env python
+
+"""
+Functions for Matching program
+
+"""
+
+__author__= "Cameron Durie"
+
+# import
+import numpy as np
+import csv
+import math
+import time
+import glob,os
+
+from cluster import sky_dist, regroup, dist_3d, best_dist
+from catalogs import write_catalog, write_table, table_to_source_list
+from astropy.table import vstack, table
+
+# join the Aegean logger
+import logging
+log = logging.getLogger('Aegean')
 
 
 
-def retrieve_data(folder, number)
+def retrieve_data(folder, number):
 
     """
     
@@ -53,7 +76,7 @@ def retrieve_data(folder, number)
 
 
 
-def process_regrouping(cat, eps, stage, dist_func):
+def process_regrouping(cat, number, length, eps, stage, dist_func, successes):
     """
 
 
@@ -71,37 +94,36 @@ def process_regrouping(cat, eps, stage, dist_func):
 
     goodies = []
     badies = []
-    successes = 0
 
     for i in range(len(islands)):
         islands[i] = sorted(islands[i])
-        if len(islands[i]) == hmany:
+        if len(islands[i]) == number:
             successes += 1
             goodies.append(islands[i])
-    #    else:
-    #       badies.append(islands[i])
+        else:
+            badies.extend(islands[i])
 
     goodies = sorted(goodies)
-    #    badies = sorted(badies)
 
     for i in range(len(goodies)):
         print(goodies[i])
 
     goodies = np.ravel(goodies)
-    #    badies = np.ravel(badies)
+    badies = np.ravel(badies)
 
-    badies = [x for x in cat if x not in goodies]  # slow alternative
     badies = sorted(badies)
 
-    write_catalog("./results/goodies_%s_%depochs" % (stage, hmany), goodies, fmt='csv')
-    write_catalog("./results/badies_%s_%depochs" %(stage, hmany), badies, fmt='csv')
+    write_catalog("./results/goodies/%d_epochs/goodies_%s_%depochs" % (number, stage, number), goodies, fmt='csv')
+    write_catalog("./results/badies/%d_epochs/badies_%s_%depochs" %(number, stage, number), badies, fmt='csv')
 
     goodies_cat = sorted(goodies)
     print(goodies_cat)
     print(badies)
 
-
-    percentage_solved = 100 * (successes) / (len(tab))
+    percentage_solved = 100 * (successes*number) / (length)
     print("\nSuccess rate = %f%%" % percentage_solved)
 
-    print("%s--- %f seconds ---" % (stage,(time.time() - start_time))
+    run_time = (time.time() - regroup_start_time)
+    print("%s  --- %f seconds ---" % (stage, run_time))
+
+    return {'goodies': goodies, 'badies': badies, 'success': successes, 'percentage_solved':  percentage_solved, 'time': run_time}

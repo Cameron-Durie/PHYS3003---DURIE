@@ -1,10 +1,11 @@
 
+def process_regrouping(cat, number, length, eps, stage, dist_func, successes, a1, b1, c1):
+    """
 
-###################### STAGE Iteration ######################
 
-    new_cat5 = badies
+    """
 
-    stage2 = []
+    stage = []
     a1 = 0.01  #from
     b1 = 0.2  #to
     c1 = 0.001  #increments
