@@ -17,6 +17,7 @@ import glob,os
 from cluster import sky_dist, regroup, dist_3d, best_dist
 from catalogs import write_catalog, write_table, table_to_source_list
 from processing import retrieve_data, process_regrouping
+from iterations import process_iterations
 from astropy.table import vstack, table
 
 # join the Aegean logger
@@ -27,12 +28,15 @@ def main():
 
 
     start_time = time.time() # record start time
-    hmany = 25  # How many csv files to load
+    hmany = 2  # How many csv files to load
     folder = './Data_set_2_small/'  # Target folder for extracting csv files
 
     cat = retrieve_data(folder, hmany)
     success = 0
 
+    stage1 = process_iterations(cat, hmany, len(cat), 'stage1', best_dist, success, 0.5, 5.0, 0.1)
+
+    """
     stage1 = process_regrouping(cat, hmany, len(cat), 1.26, 'stage1', best_dist, success)
     success = stage1['success']
 
@@ -59,8 +63,7 @@ def main():
     all_goodies.extend(stage4['goodies'])
     all_goodies.extend(stage5['goodies'])
     all_goodies.extend(stage6['goodies'])
-
-    print(all_goodies)
+    
 
     write_catalog("./results/goodies/%d_epochs/all_goodies_%depochs" % (hmany, hmany), all_goodies, fmt='csv')
 
@@ -72,6 +75,7 @@ def main():
         for stage in stages:
             csv_writer.writerow([i, stage['time'], stage['percentage_solved']])
             i += 1
+    """
 
     percentage_solved = 100*(success*hmany)/(len(cat))
     print("\nSuccess rate = %f%%" %percentage_solved)

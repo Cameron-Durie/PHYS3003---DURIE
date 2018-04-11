@@ -9,8 +9,6 @@ __author__= "Cameron Durie"
 
 # import
 import numpy as np
-import csv
-import math
 import time
 import glob,os
 
