@@ -28,8 +28,8 @@ def main():
 
 
     start_time = time.time()  # record start time
-    hmany = 10  # How many csv files to load
-    folder = './Data_set_2_small/'  # Target folder for extracting csv files
+    hmany = 50  # How many csv files to load
+    folder = './Data_set_1/'  # Target folder for extracting csv files
 
     cat = retrieve_data(folder, hmany)
     success = 0

@@ -174,9 +174,9 @@ def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func,
     write_catalog("./results/goodies/%d_epochs/goodies_%s_%depochs" % (number, stage, number), goodies, fmt='csv')
     write_catalog("./results/badies/%d_epochs/badies_%s_%depochs" %(number, stage, number), badies, fmt='csv')
 
-    goodies_cat = sorted(goodies)
-    print(goodies_cat)
-    print(badies)
+#    goodies_cat = sorted(goodies)
+#    print(goodies_cat)
+#    print(badies)
 
     percentage_solved = 100 * (successes*number) / (length)
     print("\nSuccess rate = %f%%" % percentage_solved)
