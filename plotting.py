@@ -9,6 +9,7 @@ __author__= "Cameron Durie"
 
 # import
 from matplotlib import pyplot as plt
+
 import pandas as pd
 
 
@@ -21,16 +22,13 @@ def light_curve(island, stage, num):
     x = []
     y = []
 
-    print(island)
-
     for i in range(len(island)):
-        x.extend(island[i].island)
-        y.extend(island[i].peak_flux)
+        x.append(island[i].island)
+        y.append(island[i].peak_flux)
 
+    which_src = island[0].source
     df = pd.DataFrame({'epoch': x, 'peak_flux': y})
 
-    print(x)
-    print(y)
-
-    plt.plot('epoch','peak_flux', data=df, maker= 'o', color='red')
-    savefig('./results/plots/%s/plot%d.png' %(stage, num), bbox_inches='tight')
+    plt.plot('epoch','peak_flux', data=df, marker= 'o', color='red')
+    plt.savefig('./results/plots/%d_epochs/%s/plot_%d.png' %(num, stage, which_src), bbox_inches='tight')
+    plt.gcf().clear()
