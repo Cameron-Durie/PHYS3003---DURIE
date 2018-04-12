@@ -14,7 +14,9 @@ import glob,os
 
 from cluster import sky_dist, regroup, dist_3d, best_dist
 from catalogs import write_catalog, write_table, table_to_source_list
+from plotting import light_curve
 from astropy.table import vstack, table
+
 
 # join the Aegean logger
 import logging
@@ -98,6 +100,7 @@ def process_regrouping(cat, number, length, eps, stage, dist_func, successes):
         if len(islands[i]) == number:
             successes += 1
             goodies.append(islands[i])
+            light_curve(islands[i], stage, number)
         else:
             badies.extend(islands[i])
 
@@ -125,3 +128,69 @@ def process_regrouping(cat, number, length, eps, stage, dist_func, successes):
     print("%s  --- %f seconds ---" % (stage, run_time))
 
     return {'goodies': goodies, 'badies': badies, 'success': successes, 'percentage_solved':  percentage_solved, 'time': run_time}
+
+
+
+def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func, successes):
+    """
+
+
+    """
+
+    regroup_start_time = time.time()  # record start time
+
+    islands = regroup(cat, eps, far=None, dist=dist_func)
+
+    for t in range(len(islands)):
+        print(len(islands[t]))
+
+    total_count = len(islands)
+    print("%d islands created\n" % total_count)
+
+    goodies = []
+    badies = []
+
+    for i in range(len(islands)):
+        islands[i] = sorted(islands[i])
+        if len(islands[i]) == number:
+            successes += 1
+            goodies.append(islands[i])
+            light_curve(islands[i], stage, number)
+        elif len(islands[i])% number ==0:
+            splitting(islands[i], stage, number)
+        else:
+            badies.extend(islands[i])
+
+    goodies = sorted(goodies)
+
+    for i in range(len(goodies)):
+        print(goodies[i])
+
+    goodies = np.ravel(goodies)
+    badies = np.ravel(badies)
+
+    badies = sorted(badies)
+
+    write_catalog("./results/goodies/%d_epochs/goodies_%s_%depochs" % (number, stage, number), goodies, fmt='csv')
+    write_catalog("./results/badies/%d_epochs/badies_%s_%depochs" %(number, stage, number), badies, fmt='csv')
+
+    goodies_cat = sorted(goodies)
+    print(goodies_cat)
+    print(badies)
+
+    percentage_solved = 100 * (successes*number) / (length)
+    print("\nSuccess rate = %f%%" % percentage_solved)
+
+    run_time = (time.time() - regroup_start_time)
+    print("%s  --- %f seconds ---" % (stage, run_time))
+
+    return {'goodies': goodies, 'badies': badies, 'success': successes, 'percentage_solved':  percentage_solved, 'time': run_time}
+
+
+
+def splitting(island, stage, num):
+    """
+
+    """
+
+
