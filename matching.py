@@ -28,7 +28,7 @@ def main():
 
 
     start_time = time.time()  # record start time
-    hmany = 2  # How many csv files to load
+    hmany = 10  # How many csv files to load
     folder = './Data_set_2_small/'  # Target folder for extracting csv files
 
     cat = retrieve_data(folder, hmany)
@@ -75,6 +75,7 @@ def main():
         for stage in stages:
             csv_writer.writerow([i, stage['time'], stage['percentage_solved']])
             i += 1
+        csv_writer.writerow(["total_time = %f secs" %(time.time() - start_time)])
 
     percentage_solved = 100*(success*hmany)/(len(cat))
     print("\nSuccess rate = %f%%" %percentage_solved)

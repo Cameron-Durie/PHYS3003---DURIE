@@ -82,7 +82,8 @@ def sky_dist(src1, src2):
     :func:`AegeanTools.angle_tools.gcd`
     """
 
-    return gcd(src1.ra, src1.dec, src2.ra, src2.dec) # degrees
+    dist = gcd(src1.ra, src1.dec, src2.ra, src2.dec) # degrees
+    return dist
 
 
 def dist_3d(src1, src2):
@@ -118,6 +119,7 @@ def best_dist(src1, src2):
     separation : float
         The separation in standard deviations between the two sources.
     """
+
     ra_error1 = src1.err_ra*(np.cos(np.deg2rad(src1.dec)))
     ra_error2 = src2.err_ra*(np.cos(np.deg2rad(src2.dec)))
     seperation = ((((gcd(src1.ra, src1.dec, src2.ra, src2.dec))**2) / ((ra_error1**2 + ra_error2**2 + src1.err_dec**2 + src2.err_dec**2)**0.5)) + (((src1.peak_flux - src2.peak_flux) ** 2) / ((src1.err_peak_flux ** 2 + src1.err_peak_flux ** 2) ** 0.5))) ** 0.5
@@ -172,7 +174,7 @@ def pairwise_ellpitical_binary(sources, eps, far=None):
     return distances
 
 
-def regroup(catalog, eps, far=None, dist=None):
+def regroup(catalog, eps, number, far=None, dist=None):
     """
     Regroup the islands of a catalog according to their normalised distance.
     Return a list of island groups. Sources have their (island,source) parameters relabeled.
@@ -245,7 +247,7 @@ def regroup(catalog, eps, far=None, dist=None):
             for s2 in groups[g]:
                 if abs(s2.ra - s1.ra) > rafar:
                     continue
-                if s2.island == s1.island: # Stops sources from the same epoch being matched
+                if s1.island == s2.island:
                     continue
                 if dist(s1, s2) < eps:
                     groups[g].append(s1)
@@ -258,11 +260,24 @@ def regroup(catalog, eps, far=None, dist=None):
             groups[last_group] = [s1]
 
     islands = []
+    bad_goodies = []
     # now that we have the groups, we relabel the sources to have (island,component) in flux order
     # note that the order of sources within an island list is not changed - just their labels
     for isle in groups.keys():
         #for comp, src in enumerate(sorted(groups[isle], key=lambda x: -1*x.peak_flux)):
         #    src.island = isle
         #    src.source = comp
-        islands.append(groups[isle])
+        bad = False
+        if len(groups[isle]) == number:
+            epoch_sum = 0
+            for i in range(number):
+                epoch_sum += groups[isle][i].island
+
+            if epoch_sum != (((number-1)/2)*number):
+                for k in range(number):
+                    islands.append([groups[isle][k]])
+                bad = True
+        if not bad:
+            islands.append(groups[isle])
+
     return islands

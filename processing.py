@@ -84,7 +84,7 @@ def process_regrouping(cat, number, length, eps, stage, dist_func, successes):
 
     regroup_start_time = time.time()  # record start time
 
-    islands = regroup(cat, eps, far=None, dist=dist_func)
+    islands = regroup(cat, eps, number, far=None, dist=dist_func)
 
     for t in range(len(islands)):
         print(len(islands[t]))
