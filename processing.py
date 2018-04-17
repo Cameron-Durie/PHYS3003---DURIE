@@ -15,6 +15,7 @@ import glob,os
 from cluster import sky_dist, regroup, dist_3d, best_dist
 from catalogs import write_catalog, write_table, table_to_source_list
 from plotting import light_curve
+from splitting import island_splitting
 from astropy.table import vstack, table
 
 
@@ -139,7 +140,7 @@ def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func,
 
     regroup_start_time = time.time()  # record start time
 
-    islands = regroup(cat, eps, far=None, dist=dist_func)
+    islands = regroup(cat, eps, number, far=None, dist=dist_func)
 
     for t in range(len(islands)):
         print(len(islands[t]))
@@ -157,7 +158,15 @@ def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func,
             goodies.append(islands[i])
             light_curve(islands[i], stage, number)
         elif len(islands[i])% number ==0:
-            splitting(islands[i], stage, number)
+            successes += 1
+            seperated_group = island_splitting(islands[i], number, stage)
+            goodies.append(seperated_group)
+            light_curve(seperated_group, stage, number)
+            if len(islands[i]) ==100:
+                rest_multi = [item for item in islands[i] if item not in seperated_group]
+                goodies.append(rest_multi)
+                light_curve(rest_multi, stage, number)
+                successes += 1
         else:
             badies.extend(islands[i])
 
@@ -174,9 +183,9 @@ def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func,
     write_catalog("./results/goodies/%d_epochs/goodies_%s_%depochs" % (number, stage, number), goodies, fmt='csv')
     write_catalog("./results/badies/%d_epochs/badies_%s_%depochs" %(number, stage, number), badies, fmt='csv')
 
-#    goodies_cat = sorted(goodies)
-#    print(goodies_cat)
-#    print(badies)
+    goodies_cat = sorted(goodies)
+    print(goodies_cat)
+    print(badies)
 
     percentage_solved = 100 * (successes*number) / (length)
     print("\nSuccess rate = %f%%" % percentage_solved)
@@ -188,9 +197,5 @@ def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func,
 
 
 
-def splitting(island, stage, num):
-    """
-
-    """
 
 

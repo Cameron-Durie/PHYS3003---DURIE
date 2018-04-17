@@ -16,8 +16,8 @@ import glob,os
 
 from cluster import sky_dist, regroup, dist_3d, best_dist
 from catalogs import write_catalog, write_table, table_to_source_list
-from processing import retrieve_data, process_regrouping
-from iterations import process_iterations, process_iterations_splitting
+from processing import retrieve_data, process_regrouping, process_regrouping_doubleislands
+from iterations import process_iterations, process_iterations_splitting2
 from astropy.table import vstack, table
 
 # join the Aegean logger
@@ -29,7 +29,7 @@ def main():
 
     start_time = time.time()  # record start time
     hmany = 50  # How many csv files to load
-    folder = './Data_set_1/'  # Target folder for extracting csv files
+    folder = './Data_set_2_small/'  # Target folder for extracting csv files
 
     cat = retrieve_data(folder, hmany)
     success = 0
@@ -52,9 +52,10 @@ def main():
     stage6 = process_regrouping(stage5['badies'], hmany, len(cat), 1.5, 'stage6', best_dist, success)
     success = stage6['success']
 
-    """
-    process_iterations_splitting(stage6['badies'], hmany, len(cat), 'stage7', best_dist, success, 0.2, 4.0, 0.1)
-    """
+    stage7 = process_regrouping_doubleislands(stage6['badies'], hmany, len(cat), 1.7, 'stage7', best_dist, success)
+    success = stage7['success']
+
+    stage8 = process_iterations_splitting2(stage7['badies'], hmany, len(cat), 'stage8', best_dist, success, 1.0, 20.0, 0.1)
 
     all_goodies = []
     all_goodies.extend(stage1['goodies'])
@@ -63,11 +64,15 @@ def main():
     all_goodies.extend(stage4['goodies'])
     all_goodies.extend(stage5['goodies'])
     all_goodies.extend(stage6['goodies'])
+    all_goodies.extend(stage7['goodies'])
     
 
     write_catalog("./results/goodies/%d_epochs/all_goodies_%depochs" % (hmany, hmany), all_goodies, fmt='csv')
 
-    stages = [stage1, stage2, stage3, stage4, stage5, stage6]
+
+
+    # OUTPUT PERFORMANCE INFORMATION
+    stages = [stage1, stage2, stage3, stage4, stage5, stage6, stage7]
     with open("./results/timing/performance_%d_epochs.csv" %hmany,'w') as run_data:
         csv_writer = csv.writer(run_data, delimiter=',')
         csv_writer.writerow(['stage','time', 'percentage_solved'])
