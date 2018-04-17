@@ -29,7 +29,7 @@ def main():
 
     start_time = time.time()  # record start time
     hmany = 50  # How many csv files to load
-    folder = './Data_set_2_small/'  # Target folder for extracting csv files
+    folder = './Data_set_1/'  # Target folder for extracting csv files
 
     cat = retrieve_data(folder, hmany)
     success = 0
@@ -55,7 +55,12 @@ def main():
     stage7 = process_regrouping_doubleislands(stage6['badies'], hmany, len(cat), 1.7, 'stage7', best_dist, success)
     success = stage7['success']
 
+    stage8 = process_regrouping_doubleislands(stage7['badies'], hmany, len(cat), 8.0, 'stage8', best_dist, success)
+    success = stage8['success']
+
+    """
     stage8 = process_iterations_splitting2(stage7['badies'], hmany, len(cat), 'stage8', best_dist, success, 1.0, 20.0, 0.1)
+    """
 
     all_goodies = []
     all_goodies.extend(stage1['goodies'])
@@ -65,14 +70,13 @@ def main():
     all_goodies.extend(stage5['goodies'])
     all_goodies.extend(stage6['goodies'])
     all_goodies.extend(stage7['goodies'])
-    
+    all_goodies.extend(stage8['goodies'])
 
     write_catalog("./results/goodies/%d_epochs/all_goodies_%depochs" % (hmany, hmany), all_goodies, fmt='csv')
 
 
-
     # OUTPUT PERFORMANCE INFORMATION
-    stages = [stage1, stage2, stage3, stage4, stage5, stage6, stage7]
+    stages = [stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8]
     with open("./results/timing/performance_%d_epochs.csv" %hmany,'w') as run_data:
         csv_writer = csv.writer(run_data, delimiter=',')
         csv_writer.writerow(['stage','time', 'percentage_solved'])

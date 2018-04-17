@@ -162,7 +162,7 @@ def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func,
             seperated_group = island_splitting(islands[i], number, stage)
             goodies.append(seperated_group)
             light_curve(seperated_group, stage, number)
-            if len(islands[i]) ==100:
+            if len(islands[i]) == (2*number):
                 rest_multi = [item for item in islands[i] if item not in seperated_group]
                 goodies.append(rest_multi)
                 light_curve(rest_multi, stage, number)

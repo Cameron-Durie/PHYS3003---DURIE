@@ -147,6 +147,8 @@ def process_iterations_splitting2(cat, number, length, stage_name, dist_func, pr
                 successes += 1
             elif len(islands[i]) % number == 0:
                 successes += 1
+                if islands[i] == (2*number):
+                    successes += 1
 
         percentage_solved = 100 * (successes*number) / (length)
         print("\nSuccess rate = %f%%" % percentage_solved)
