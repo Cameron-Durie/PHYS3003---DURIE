@@ -77,7 +77,7 @@ def retrieve_data(folder, number):
 
 
 
-def process_regrouping(cat, number, length, eps, stage, dist_func, successes):
+def process_regrouping(cat, number, eps, stage, dist_func, success):
     """
 
 
@@ -99,7 +99,6 @@ def process_regrouping(cat, number, length, eps, stage, dist_func, successes):
     for i in range(len(islands)):
         islands[i] = sorted(islands[i])
         if len(islands[i]) == number:
-            successes += 1
             goodies.append(islands[i])
             light_curve(islands[i], stage, number)
         else:
@@ -122,17 +121,17 @@ def process_regrouping(cat, number, length, eps, stage, dist_func, successes):
     print(goodies_cat)
     print(badies)
 
-    percentage_solved = 100 * (successes*number) / (length)
+    percentage_solved = 100*(success/100 + (1-success/100)*(len(goodies)/(len(goodies)+len(badies))))
     print("\nSuccess rate = %f%%" % percentage_solved)
 
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'success': successes, 'percentage_solved':  percentage_solved, 'time': run_time}
+    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time}
 
 
 
-def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func, successes):
+def process_regrouping_doubleislands(cat, number, eps, stage, dist_func, success):
     """
 
 
@@ -154,11 +153,9 @@ def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func,
     for i in range(len(islands)):
         islands[i] = sorted(islands[i])
         if len(islands[i]) == number:
-            successes += 1
             goodies.append(islands[i])
             light_curve(islands[i], stage, number)
-        elif len(islands[i])% number ==0:
-            successes += 1
+        elif len(islands[i])% number == 0:
             seperated_group = island_splitting(islands[i], number, stage)
             goodies.append(seperated_group)
             light_curve(seperated_group, stage, number)
@@ -166,7 +163,6 @@ def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func,
                 rest_multi = [item for item in islands[i] if item not in seperated_group]
                 goodies.append(rest_multi)
                 light_curve(rest_multi, stage, number)
-                successes += 1
         else:
             badies.extend(islands[i])
 
@@ -187,13 +183,13 @@ def process_regrouping_doubleislands(cat, number, length, eps, stage, dist_func,
     print(goodies_cat)
     print(badies)
 
-    percentage_solved = 100 * (successes*number) / (length)
+    percentage_solved = 100*(success/100 + (1-success/100)*(len(goodies)/(len(goodies)+len(badies))))
     print("\nSuccess rate = %f%%" % percentage_solved)
 
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'success': successes, 'percentage_solved':  percentage_solved, 'time': run_time}
+    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time}
 
 
 

@@ -28,35 +28,35 @@ def main():
 
 
     start_time = time.time()  # record start time
-    hmany = 50  # How many csv files to load
-    folder = './Data_set_1/'  # Target folder for extracting csv files
+    hmany = 2  # How many csv files to load
+    folder = './Data_set_2_small/'  # Target folder for extracting csv files
 
     cat = retrieve_data(folder, hmany)
     success = 0
 
-    stage1 = process_regrouping(cat, hmany, len(cat), 1.20, 'stage1', best_dist, success)
-    success = stage1['success']
+    stage1 = process_regrouping(cat, hmany, 1.20, 'stage1', best_dist, success)
+    success = stage1['percentage_solved']
 
-    stage2 = process_regrouping(stage1['badies'], hmany, len(cat), 2.5, 'stage2', best_dist, success)
-    success = stage2['success']
+    stage2 = process_regrouping(stage1['badies'], hmany, 2.5, 'stage2', best_dist, success)
+    success = stage2['percentage_solved']
 
-    stage3 = process_regrouping(stage2['badies'], hmany, len(cat), 0.8, 'stage3', best_dist, success)
-    success = stage3['success']
+    stage3 = process_regrouping(stage2['badies'], hmany, 0.8, 'stage3', best_dist, success)
+    success = stage3['percentage_solved']
 
-    stage4 = process_regrouping(stage3['badies'], hmany, len(cat), 3.5, 'stage4', best_dist, success)
-    success = stage4['success']
+    stage4 = process_regrouping(stage3['badies'], hmany, 3.5, 'stage4', best_dist, success)
+    success = stage4['percentage_solved']
 
-    stage5 = process_regrouping(stage4['badies'], hmany, len(cat), 0.6, 'stage5', best_dist, success)
-    success = stage5['success']
+    stage5 = process_regrouping(stage4['badies'], hmany, 0.6, 'stage5', best_dist, success)
+    success = stage5['percentage_solved']
 
-    stage6 = process_regrouping(stage5['badies'], hmany, len(cat), 1.5, 'stage6', best_dist, success)
-    success = stage6['success']
+    stage6 = process_regrouping(stage5['badies'], hmany, 1.5, 'stage6', best_dist, success)
+    success = stage6['percentage_solved']
 
-    stage7 = process_regrouping_doubleislands(stage6['badies'], hmany, len(cat), 1.7, 'stage7', best_dist, success)
-    success = stage7['success']
+    stage7 = process_regrouping_doubleislands(stage6['badies'], hmany, 1.7, 'stage7', best_dist, success)
+    success = stage7['percentage_solved']
 
-    stage8 = process_regrouping_doubleislands(stage7['badies'], hmany, len(cat), 8.0, 'stage8', best_dist, success)
-    success = stage8['success']
+    stage8 = process_regrouping_doubleislands(stage7['badies'], hmany, 8.0, 'stage8', best_dist, success)
+    success = stage8['percentage_solved']
 
     """
     stage8 = process_iterations_splitting2(stage7['badies'], hmany, len(cat), 'stage8', best_dist, success, 1.0, 20.0, 0.1)
@@ -86,7 +86,7 @@ def main():
             i += 1
         csv_writer.writerow(["total_time = %f secs" %(time.time() - start_time)])
 
-    percentage_solved = 100*(success*hmany)/(len(cat))
+    percentage_solved = 100*(1-(len(stage8['badies'])/len(all_goodies)))
     print("\nSuccess rate = %f%%" %percentage_solved)
 
     print("total  --- %s seconds ---" % (time.time() - start_time))
