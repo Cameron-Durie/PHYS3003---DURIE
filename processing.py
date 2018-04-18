@@ -25,8 +25,7 @@ log = logging.getLogger('Aegean')
 
 
 
-def retrieve_data(folder, number):
-
+def retrieve_data_csv(folder, number):
     """
     
     
@@ -74,6 +73,31 @@ def retrieve_data(folder, number):
     print(cat)
 
     return cat
+
+def retrieve_data_fits(folder, number):
+    """
+
+
+    """
+    files = []  # To store list of target csv files
+    epoch = 0
+
+    os.chdir("%s" % folder)
+    for file in glob.glob("*.fits"):
+        if epoch < number:
+            files.append(file)
+            epoch += 1
+        else:
+            break
+    print(files)
+    epoch = 0
+
+    # load tables
+    for filename in files:
+        tab = table.Table.read("%s" % filename)
+
+
+
 
 
 
@@ -159,10 +183,13 @@ def process_regrouping_doubleislands(cat, number, eps, stage, dist_func, success
             seperated_group = island_splitting(islands[i], number, stage)
             goodies.append(seperated_group)
             light_curve(seperated_group, stage, number)
+            rest_multi = [item for item in islands[i] if item not in seperated_group]
             if len(islands[i]) == (2*number):
-                rest_multi = [item for item in islands[i] if item not in seperated_group]
                 goodies.append(rest_multi)
                 light_curve(rest_multi, stage, number)
+            else:
+                badies.extend(rest_multi)
+
         else:
             badies.extend(islands[i])
 

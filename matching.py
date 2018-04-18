@@ -16,7 +16,7 @@ import glob,os
 
 from cluster import sky_dist, regroup, dist_3d, best_dist
 from catalogs import write_catalog, write_table, table_to_source_list
-from processing import retrieve_data, process_regrouping, process_regrouping_doubleislands
+from processing import retrieve_data_csv, retrieve_data_fits, process_regrouping, process_regrouping_doubleislands
 from iterations import process_iterations, process_iterations_splitting2
 from astropy.table import vstack, table
 
@@ -28,10 +28,10 @@ def main():
 
 
     start_time = time.time()  # record start time
-    hmany = 2  # How many csv files to load
-    folder = './Data_set_2_small/'  # Target folder for extracting csv files
+    hmany = 50  # How many csv files to load
+    folder = './Data_set_1/'  # Target folder for extracting csv files
 
-    cat = retrieve_data(folder, hmany)
+    cat = retrieve_data_csv(folder, hmany)
     success = 0
 
     stage1 = process_regrouping(cat, hmany, 1.20, 'stage1', best_dist, success)
@@ -86,7 +86,7 @@ def main():
             i += 1
         csv_writer.writerow(["total_time = %f secs" %(time.time() - start_time)])
 
-    percentage_solved = 100*(1-(len(stage8['badies'])/len(all_goodies)))
+    percentage_solved = 100*(1-(len(stage8['badies'])/(len(all_goodies)+len(stage8['badies']))))
     print("\nSuccess rate = %f%%" %percentage_solved)
 
     print("total  --- %s seconds ---" % (time.time() - start_time))
