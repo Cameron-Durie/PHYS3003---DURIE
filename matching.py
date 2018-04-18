@@ -28,8 +28,8 @@ def main():
 
 
     start_time = time.time()  # record start time
-    hmany = 10  # How many csv files to load
-    folder = './Data_set_2_small/'  # Target folder for extracting csv files
+    hmany = 50  # How many csv files to load
+    folder = './Data_set_1/'  # Target folder for extracting csv files
 
     cat = retrieve_data_csv(folder, hmany)
     success = 0
@@ -52,10 +52,10 @@ def main():
     stage6 = process_regrouping(stage5['badies'], hmany, 1.5, 'stage6', best_dist, success)
     success = stage6['percentage_solved']
 
-    stage7 = process_regrouping(stage6['badies'], hmany, 0.15, 'stage7', sky_dist, success)
+    stage7 = process_regrouping(stage6['badies'], hmany, 0.2, 'stage7', sky_dist, success)
     success = stage7['percentage_solved']
 
-    stage8 = process_regrouping_allislands(stage7['badies'], hmany, 1.0, 'stage8', sky_dist, success)
+    stage8 = process_regrouping_allislands(stage7['badies'], hmany, 0.25, 'stage8', sky_dist, success)
     success = stage8['percentage_solved']
 
 
