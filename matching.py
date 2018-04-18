@@ -16,7 +16,7 @@ import glob,os
 
 from cluster import sky_dist, regroup, dist_3d, best_dist
 from catalogs import write_catalog, write_table, table_to_source_list
-from processing import retrieve_data_csv, retrieve_data_fits, process_regrouping, process_regrouping_doubleislands
+from processing import retrieve_data_csv, retrieve_data_fits, process_regrouping, process_regrouping_doubleislands, process_regrouping_allislands
 from iterations import process_iterations, process_iterations_splitting2
 from astropy.table import vstack, table
 
@@ -28,8 +28,8 @@ def main():
 
 
     start_time = time.time()  # record start time
-    hmany = 50  # How many csv files to load
-    folder = './Data_set_1/'  # Target folder for extracting csv files
+    hmany = 10  # How many csv files to load
+    folder = './Data_set_2_small/'  # Target folder for extracting csv files
 
     cat = retrieve_data_csv(folder, hmany)
     success = 0
@@ -52,13 +52,23 @@ def main():
     stage6 = process_regrouping(stage5['badies'], hmany, 1.5, 'stage6', best_dist, success)
     success = stage6['percentage_solved']
 
+    stage7 = process_regrouping(stage6['badies'], hmany, 0.15, 'stage7', sky_dist, success)
+    success = stage7['percentage_solved']
+
+    stage8 = process_regrouping_allislands(stage7['badies'], hmany, 1.0, 'stage8', sky_dist, success)
+    success = stage8['percentage_solved']
+
+
+
+    """
+
     stage7 = process_regrouping_doubleislands(stage6['badies'], hmany, 1.7, 'stage7', best_dist, success)
     success = stage7['percentage_solved']
 
     stage8 = process_regrouping_doubleislands(stage7['badies'], hmany, 8.0, 'stage8', best_dist, success)
     success = stage8['percentage_solved']
 
-    """
+
     stage8 = process_iterations_splitting2(stage7['badies'], hmany, len(cat), 'stage8', best_dist, success, 1.0, 20.0, 0.1)
     """
 

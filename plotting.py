@@ -34,7 +34,7 @@ def light_curve(island, stage, num):
     plt.plot('epoch','peak_flux', data=df, marker= 'o', color='red')
     plt.xlabel('Epoch')
     plt.ylabel('peak_flux')
-    plt.ylim(0, y[1]+1)
+    plt.ylim(0, y[0]+1)
 
     plt.suptitle('Light Curve %d' %which_src)
     plt.savefig('./results/plots/%d_epochs/%s/plot_%d.png' %(num, stage, which_src))
