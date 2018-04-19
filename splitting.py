@@ -55,8 +55,9 @@ def complete_island_splitting(total_group, num, stage):
                 flux_val = [total_group[which_now].peak_flux]
                 flux_values.extend(flux_val)
             index_max, value = max(enumerate(flux_values), key=operator.itemgetter(1))
-            good_to_add = [total_group[(index*group_size)+index_max]]
+            good_to_add = [total_group[(index*(group_size-split_num))+index_max]]
             new_single_good_island.extend(good_to_add)
         new_good_islands.append(new_single_good_island)
+        total_group = [item for item in total_group if item not in new_single_good_island]
 
     return new_good_islands

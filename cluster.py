@@ -174,7 +174,7 @@ def pairwise_ellpitical_binary(sources, eps, far=None):
     return distances
 
 
-def regroup(catalog, eps, number, far=None, dist=None):
+def regroup(catalog, eps, number, far=None, dist=None, multi=None):
     """
     Regroup the islands of a catalog according to their normalised distance.
     Return a list of island groups. Sources have their (island,source) parameters relabeled.
@@ -247,8 +247,9 @@ def regroup(catalog, eps, number, far=None, dist=None):
             for s2 in groups[g]:
                 if abs(s2.ra - s1.ra) > rafar:
                     continue
-                if s1.island == s2.island:
-                    continue
+                if multi is None:
+                    if s1.island == s2.island:
+                        continue
                 if dist(s1, s2) < eps:
                     groups[g].append(s1)
                     done = True
@@ -268,13 +269,14 @@ def regroup(catalog, eps, number, far=None, dist=None):
         #    src.island = isle
         #    src.source = comp
         bad = False
-        if len(groups[isle]) == number:
+        if len(groups[isle])%number == 0:
+            length = int(len(groups[isle])/number)
             epoch_sum = 0
-            for i in range(number):
+            for i in range(number*length):
                 epoch_sum += groups[isle][i].island
 
-            if epoch_sum != (((number-1)/2)*number):
-                for k in range(number):
+            if epoch_sum != ((((number-1)/2)*number)*length):
+                for k in range(number*length):
                     islands.append([groups[isle][k]])
                 bad = True
         if not bad:
