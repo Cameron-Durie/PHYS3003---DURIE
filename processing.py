@@ -79,6 +79,8 @@ def retrieve_data_fits(folder, number):
 
 
     """
+    #astrogpy.io fits
+
     files = []  # To store list of target csv files
     epoch = 0
 
