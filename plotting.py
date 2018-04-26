@@ -9,6 +9,7 @@ __author__= "Cameron Durie"
 
 # import
 from matplotlib import pyplot as plt
+from catalogs import write_catalog
 
 import pandas as pd
 
@@ -38,6 +39,8 @@ def light_curve(island, stage, num):
     plt.savefig('./results/plots/%d_epochs/%s/plot_%d.png' %(num, stage, which_src))
     plt.gcf().clear()
 
+    write_catalog('./results/plots/%d_epochs/%s/plot_%d.csv' %(num, stage, which_src), island, fmt='csv');
+
 
 def multigroup_plot(island, stage, num, group_size):
     """
@@ -55,7 +58,12 @@ def multigroup_plot(island, stage, num, group_size):
     which_srcs = []
     for k in range(group_size):
         which_srcs.append(island[k].source)
-    plot_name = str(which_srcs).strip('[]')
+
+    if (len(island)/num)<30:
+        plot_name = str(which_srcs).strip('[]')
+    else:
+        plot_name = str(len(island))
+
 
     df = pd.DataFrame({'epoch': x, 'peak_flux': y})
 
@@ -67,3 +75,5 @@ def multigroup_plot(island, stage, num, group_size):
     plt.suptitle('Light Curve %s' % plot_name)
     plt.savefig('./results/plots/%d_epochs/%s/multiplot_%s.png' % (num, stage, plot_name))
     plt.gcf().clear()
+
+    write_catalog('./results/plots/%d_epochs/%s/plot_%s.csv' % (num, stage, plot_name), island, fmt='csv');

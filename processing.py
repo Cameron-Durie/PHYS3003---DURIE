@@ -98,8 +98,23 @@ def retrieve_data_fits(folder, number):
     for filename in files:
         tab = table.Table.read("%s" % filename)
 
-    print(tab)
-    tab['island'] = epoch
+        tab['island'] = epoch
+        tab['source'][:] = range(0, len(tab))
+
+        if epoch == 0:
+            frames = tab
+        else:
+            frames = vstack([frames, tab])
+
+        epoch += 1
+
+    print(frames)
+    write_table(frames, "./results/frames%d.csv" % number)
+
+    cat = table_to_source_list(frames)
+    print(cat)
+
+    return cat
 
 
 
@@ -155,7 +170,7 @@ def process_regrouping(cat, number, eps, stage, dist_func, success):
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
+    return {'eps': eps, 'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
 
 
 
@@ -222,7 +237,7 @@ def process_regrouping_doubleislands(cat, number, eps, stage, dist_func, success
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
+    return {'eps': eps, 'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
 
 
 
@@ -284,7 +299,7 @@ def process_regrouping_allislands(cat, number, eps, stage, dist_func, success):
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
+    return {'eps': eps, 'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
 
 
 
@@ -297,6 +312,7 @@ def process_remainder(cat, number, stage, success):
     regroup_start_time = time.time()  # record start time
     islands = [cat]
     bug_count = 0
+    eps = 0
 
     for t in range(len(islands)):
         print(len(islands[t]))
@@ -307,18 +323,13 @@ def process_remainder(cat, number, stage, success):
     goodies = []
     badies = []
 
-    for i in range(len(islands)):
-        islands[i] = sorted(islands[i])
-        if len(islands[i]) == number:
-            goodies.append(islands[i])
-            light_curve(islands[i], stage, number)
-        elif len(islands[i])% number == 0:
-            seperated_group = complete_island_splitting(islands[i], number, stage)
-            goodies.extend(seperated_group)
-            for i in range(int(len(seperated_group))):
-                light_curve(seperated_group[i], stage, number)
-        else:
-            badies.extend(islands[i])
+    islands[0] = sorted(islands[0])
+    seperated_group = complete_island_splitting(islands[0], number, stage)
+    goodies.extend(seperated_group)
+    for i in range(int(len(seperated_group))):
+       light_curve(seperated_group[i], stage, number)
+
+    badies.extend([item for item in islands[0] if item not in np.ravel(seperated_group)])
 
     goodies = sorted(goodies)
 
@@ -343,4 +354,4 @@ def process_remainder(cat, number, stage, success):
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
+    return {'eps': eps, 'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}

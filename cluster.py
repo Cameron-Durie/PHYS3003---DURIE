@@ -213,7 +213,7 @@ def regroup(catalog, eps, number, far=None, dist=None, multi=None):
     else:
         try:
             srccat = catalog
-            _ = catalog[0].ra_str, catalog[0].err_ra, catalog[0].dec_str, catalog[0].err_dec, catalog[0].int_flux, catalog[0].err_int_flux
+            _ = catalog[0].ra, catalog[0].err_ra, catalog[0].dec, catalog[0].err_dec, catalog[0].int_flux, catalog[0].err_int_flux
 
         except AttributeError as e:
             log.error("catalog is not understood.")

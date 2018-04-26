@@ -22,11 +22,13 @@ import logging
 log = logging.getLogger('Aegean')
 
 def main():
+    """
 
+    """
 
     start_time = time.time()  # record start time
-    hmany = 2  # How many csv files to load
-    folder = './Data_set_2_small/'  # Target folder for extracting csv files
+    hmany = 50  # How many csv files to load
+    folder = './Data_set_1/'  # Target folder for extracting csv files
 
     cat = retrieve_data_csv(folder, hmany)
     success = 0
@@ -59,25 +61,25 @@ def main():
         stage9 = process_regrouping_allislands(stage8['badies'], hmany, 0.2, 'stage9', sky_dist, success)
         success = stage9['percentage_solved']
     else:
-        stage9 = {'goodies': [],'badies': [], 'percentage_solved': stage8['percentage_solved'], 'time': 0.0, 'bug_count': 0}
+        stage9 = {'eps': 0.2, 'goodies': [],'badies': [], 'percentage_solved': stage8['percentage_solved'], 'time': 0.0, 'bug_count': 0}
 
     if len(stage9['badies']) != 0:
         stage10 = process_regrouping_allislands(stage9['badies'], hmany, 0.4, 'stage10', sky_dist, success)
         success = stage10['percentage_solved']
     else:
-        stage10 = {'goodies': [],'badies': [], 'percentage_solved': stage9['percentage_solved'], 'time': 0.0, 'bug_count': 0}
+        stage10 = {'eps': 0.4, 'goodies': [],'badies': [], 'percentage_solved': stage9['percentage_solved'], 'time': 0.0, 'bug_count': 0}
 
     if len(stage10['badies']) != 0:
         stage11 = process_regrouping_allislands(stage10['badies'], hmany, 0.8, 'stage11', sky_dist, success)
         success = stage11['percentage_solved']
     else:
-        stage11 = {'goodies': [],'badies': [], 'percentage_solved': stage10['percentage_solved'], 'time': 0.0, 'bug_count': 0}
+        stage11 = {'eps': 0.8, 'goodies': [],'badies': [], 'percentage_solved': stage10['percentage_solved'], 'time': 0.0, 'bug_count': 0}
 
     if len(stage11['badies']) != 0:
         stage12 = process_remainder(stage11['badies'], hmany, 'stage12', success)
         success = stage12['percentage_solved']
     else:
-        stage12 = {'goodies': [],'badies': [], 'percentage_solved': stage11['percentage_solved'], 'time': 0.0, 'bug_count': 0}
+        stage12 = {'eps': 0, 'goodies': [],'badies': [], 'percentage_solved': stage11['percentage_solved'], 'time': 0.0, 'bug_count': 0}
 
 
 
@@ -102,10 +104,10 @@ def main():
     stages = [stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10, stage11, stage12]
     with open("./results/timing/performance_%d_epochs.csv" %hmany,'w') as run_data:
         csv_writer = csv.writer(run_data, delimiter=',')
-        csv_writer.writerow(['stage','time', 'percentage_solved', 'number_in', 'number_out', 'number_solved', 'bug_count'])
+        csv_writer.writerow(['stage', 'eps', 'time', 'percentage_solved', 'number_in', 'number_out', 'number_solved', 'bug_count'])
         i = 1
         for stage in stages:
-            csv_writer.writerow([i, stage['time'], stage['percentage_solved'], len(stage['badies'])+len(stage['goodies']), len(stage['badies']), len(stage['goodies']), stage['bug_count']])
+            csv_writer.writerow([i, stage['eps'], stage['time'], stage['percentage_solved'], len(stage['badies'])+len(stage['goodies']), len(stage['badies']), len(stage['goodies']), stage['bug_count']])
             i += 1
         csv_writer.writerow(["total_time = %f secs" %(time.time() - start_time)])
 
