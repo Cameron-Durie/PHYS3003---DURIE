@@ -29,10 +29,7 @@ def light_curve(island, stage, num):
         flux_error.append(island[i].err_peak_flux)
 
     which_src = island[0].source
-    plt.errorbar(x,y, yerr=flux_error,  marker= 'o', color='red')
-
-    #plt.plot('epoch','peak_flux', data=df,
-    #plt.yerrorbar(df['epoch'], df['peak_flux'], yerror=df[''])
+    plt.errorbar(x,y, yerr=flux_error,  marker= 'o', color='red', ecolor='blue', capsize=2, elinewidth=1)
     plt.xlabel('Epoch')
     plt.ylabel('peak_flux')
     plt.ylim(0, y[0]+1)

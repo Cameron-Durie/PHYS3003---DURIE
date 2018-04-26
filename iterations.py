@@ -32,7 +32,8 @@ def process_iterations(cat, number, length, stage_name, dist_func, previous_succ
     print(test_area)
 
     for eps in test_area:
-        islands = regroup(cat, eps, number, far=None, dist=dist_func)
+        regroup_return = regroup(cat, eps, number, far=None, dist=dist_func)
+        islands = regroup_return['islands']
 
         for t in range(len(islands)):
             print(len(islands[t]))
@@ -83,7 +84,8 @@ def process_iterations_splitting1(cat, number, length, stage_name, dist_func, pr
     print(test_area)
 
     for eps in test_area:
-        islands = regroup(cat, eps, number, far=None, dist=dist_func)
+        regroup_return = regroup(cat, eps, number, far=None, dist=dist_func)
+        islands = regroup_return['islands']
 
         for t in range(len(islands)):
             print(len(islands[t]))
@@ -131,7 +133,8 @@ def process_iterations_splitting2(cat, number, length, stage_name, dist_func, pr
 
 
     for eps in test_area:
-        islands = regroup(cat, eps, number, far=None, dist=dist_func)
+        regroup_return = regroup(cat, eps, number, far=None, dist=dist_func)
+        islands = regroup_return['islands']
 
         for t in range(len(islands)):
             print(len(islands[t]))

@@ -261,7 +261,7 @@ def regroup(catalog, eps, number, far=None, dist=None, multi=None):
             groups[last_group] = [s1]
 
     islands = []
-    bad_goodies = []
+    bug_counter = 0;
     # now that we have the groups, we relabel the sources to have (island,component) in flux order
     # note that the order of sources within an island list is not changed - just their labels
     for isle in groups.keys():
@@ -279,7 +279,8 @@ def regroup(catalog, eps, number, far=None, dist=None, multi=None):
                 for k in range(number*length):
                     islands.append([groups[isle][k]])
                 bad = True
+                bug_counter += 1
         if not bad:
             islands.append(groups[isle])
 
-    return islands
+    return {'islands': islands, 'bug_counter': bug_counter}

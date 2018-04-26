@@ -12,7 +12,7 @@ import numpy as np
 import time
 import glob,os
 
-from cluster import sky_dist, regroup, dist_3d, best_dist
+from cluster import regroup
 from catalogs import write_catalog, write_table, table_to_source_list
 from plotting import light_curve
 from splitting import island_splitting, complete_island_splitting
@@ -98,8 +98,8 @@ def retrieve_data_fits(folder, number):
     for filename in files:
         tab = table.Table.read("%s" % filename)
 
-
-
+    print(tab)
+    tab['island'] = epoch
 
 
 
@@ -111,7 +111,9 @@ def process_regrouping(cat, number, eps, stage, dist_func, success):
 
     regroup_start_time = time.time()  # record start time
 
-    islands = regroup(cat, eps, number, far=None, dist=dist_func)
+    regroup_return = regroup(cat, eps, number, far=None, dist=dist_func)
+    islands = regroup_return['islands']
+    bug_count = regroup_return['bug_counter']
 
     for t in range(len(islands)):
         print(len(islands[t]))
@@ -153,7 +155,7 @@ def process_regrouping(cat, number, eps, stage, dist_func, success):
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time}
+    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
 
 
 
@@ -165,7 +167,9 @@ def process_regrouping_doubleislands(cat, number, eps, stage, dist_func, success
 
     regroup_start_time = time.time()  # record start time
 
-    islands = regroup(cat, eps, number, far=None, dist=dist_func, multi = True)
+    regroup_return = regroup(cat, eps, number, far=None, dist=dist_func, multi = True)
+    islands = regroup_return['islands']
+    bug_count = regroup_return['bug_counter']
 
     for t in range(len(islands)):
         print(len(islands[t]))
@@ -218,7 +222,7 @@ def process_regrouping_doubleislands(cat, number, eps, stage, dist_func, success
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time}
+    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
 
 
 
@@ -231,7 +235,9 @@ def process_regrouping_allislands(cat, number, eps, stage, dist_func, success):
 
     regroup_start_time = time.time()  # record start time
 
-    islands = regroup(cat, eps, number, far=None, dist=dist_func, multi = True)
+    regroup_return = regroup(cat, eps, number, far=None, dist=dist_func, multi = True)
+    islands = regroup_return['islands']
+    bug_count = regroup_return['bug_counter']
 
     for t in range(len(islands)):
         print(len(islands[t]))
@@ -278,7 +284,7 @@ def process_regrouping_allislands(cat, number, eps, stage, dist_func, success):
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time}
+    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
 
 
 
@@ -290,6 +296,7 @@ def process_remainder(cat, number, stage, success):
 
     regroup_start_time = time.time()  # record start time
     islands = [cat]
+    bug_count = 0
 
     for t in range(len(islands)):
         print(len(islands[t]))
@@ -336,4 +343,4 @@ def process_remainder(cat, number, stage, success):
     run_time = (time.time() - regroup_start_time)
     print("%s  --- %f seconds ---" % (stage, run_time))
 
-    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time}
+    return {'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
