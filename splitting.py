@@ -43,7 +43,7 @@ def complete_island_splitting(total_group, num, stage):
     group_size = int(len(total_group)/num)
     print(total_group)
 
-    multigroup_plot(total_group, stage, num, group_size)
+    #multigroup_plot(total_group, stage, num, group_size)
     new_good_islands = []
 
     for split_num in range(group_size):

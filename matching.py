@@ -15,7 +15,7 @@ import time
 from cluster import sky_dist, regroup, dist_3d, best_dist
 from catalogs import write_catalog, write_table, table_to_source_list
 from processing import retrieve_data_csv, retrieve_data_fits, process_regrouping, process_remainder, process_regrouping_allislands
-from iterations import process_iterations, process_iterations_splitting2
+from iterations import process_iterations, process_iterations_splitting
 
 # join the Aegean logger
 import logging
@@ -27,35 +27,42 @@ def main():
     """
 
     start_time = time.time()  # record start time
-    hmany = 50  # How many csv files to load
-    folder = './Data_set_1/'  # Target folder for extracting csv files
+    hmany = 25  # How many csv files to load
+    folder = './expert/'  # Target folder for extracting csv files
 
-    cat = retrieve_data_csv(folder, hmany)
+    cat = retrieve_data_fits(folder, hmany)
     success = 0
 
-    stage1 = process_regrouping(cat, hmany, 1.20, 'stage1', best_dist, success)
+
+    stage1 = process_regrouping(cat, hmany, 0.6, 'stage1', best_dist, success)
     success = stage1['percentage_solved']
 
     stage2 = process_regrouping(stage1['badies'], hmany, 2.5, 'stage2', best_dist, success)
     success = stage2['percentage_solved']
 
-    stage3 = process_regrouping(stage2['badies'], hmany, 0.8, 'stage3', best_dist, success)
+    stage3 = process_regrouping(stage2['badies'], hmany, 0.4, 'stage3', best_dist, success)
     success = stage3['percentage_solved']
 
     stage4 = process_regrouping(stage3['badies'], hmany, 3.5, 'stage4', best_dist, success)
     success = stage4['percentage_solved']
 
-    stage5 = process_regrouping(stage4['badies'], hmany, 0.6, 'stage5', best_dist, success)
+    stage5 = process_regrouping(stage4['badies'], hmany, 0.23, 'stage5', best_dist, success)
     success = stage5['percentage_solved']
 
-    stage6 = process_regrouping(stage5['badies'], hmany, 1.5, 'stage6', best_dist, success)
+    stage6 = process_regrouping(stage5['badies'], hmany, 1.0, 'stage6', best_dist, success)
     success = stage6['percentage_solved']
 
-    stage7 = process_regrouping(stage6['badies'], hmany, 0.2, 'stage7', sky_dist, success)
-    success = stage7['percentage_solved']
+    if len(stage6['badies']) != 0:
+        stage7 = process_regrouping(stage6['badies'], hmany, 0.2, 'stage7', sky_dist, success)
+        success = stage7['percentage_solved']
+    else:
+        stage7 = {'eps': 0.2, 'goodies': [],'badies': [], 'percentage_solved': stage6['percentage_solved'], 'time': 0.0, 'bug_count': 0}
 
-    stage8 = process_regrouping_allislands(stage7['badies'], hmany, 0.1, 'stage8', sky_dist, success)
-    success = stage8['percentage_solved']
+    if len(stage7['badies']) != 0:
+        stage8 = process_regrouping_allislands(stage7['badies'], hmany, 0.1, 'stage8', sky_dist, success)
+        success = stage8['percentage_solved']
+    else:
+        stage8 = {'eps': 0.1, 'goodies': [],'badies': [], 'percentage_solved': stage7['percentage_solved'], 'time': 0.0, 'bug_count': 0}
 
     if len(stage8['badies']) != 0:
         stage9 = process_regrouping_allislands(stage8['badies'], hmany, 0.2, 'stage9', sky_dist, success)
@@ -113,6 +120,7 @@ def main():
 
     percentage_solved = 100*((len(all_goodies))/(len(cat)))
     print("\nSuccess rate = %f%%" %percentage_solved)
+
 
     print("total  --- %s seconds ---" % (time.time() - start_time))
 

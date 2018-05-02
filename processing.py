@@ -143,7 +143,7 @@ def process_regrouping(cat, number, eps, stage, dist_func, success):
         islands[i] = sorted(islands[i])
         if len(islands[i]) == number:
             goodies.append(islands[i])
-            light_curve(islands[i], stage, number)
+            #light_curve(islands[i], stage, number)
         else:
             badies.extend(islands[i])
 
@@ -171,75 +171,6 @@ def process_regrouping(cat, number, eps, stage, dist_func, success):
     print("%s  --- %f seconds ---" % (stage, run_time))
 
     return {'eps': eps, 'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
-
-
-
-def process_regrouping_doubleislands(cat, number, eps, stage, dist_func, success):
-    """
-
-
-    """
-
-    regroup_start_time = time.time()  # record start time
-
-    regroup_return = regroup(cat, eps, number, far=None, dist=dist_func, multi = True)
-    islands = regroup_return['islands']
-    bug_count = regroup_return['bug_counter']
-
-    for t in range(len(islands)):
-        print(len(islands[t]))
-
-    total_count = len(islands)
-    print("%d islands created\n" % total_count)
-
-    goodies = []
-    badies = []
-
-    for i in range(len(islands)):
-        islands[i] = sorted(islands[i])
-        if len(islands[i]) == number:
-            goodies.append(islands[i])
-            light_curve(islands[i], stage, number)
-        elif len(islands[i])% number == 0:
-            seperated_group = island_splitting(islands[i], number, stage)
-            goodies.append(seperated_group)
-            light_curve(seperated_group, stage, number)
-            rest_multi = [item for item in islands[i] if item not in seperated_group]
-            if len(islands[i]) == (2*number):
-                goodies.append(rest_multi)
-                light_curve(rest_multi, stage, number)
-            else:
-                badies.extend(rest_multi)
-
-        else:
-            badies.extend(islands[i])
-
-    goodies = sorted(goodies)
-
-    for i in range(len(goodies)):
-        print(goodies[i])
-
-    goodies = np.ravel(goodies)
-    badies = np.ravel(badies)
-
-    badies = sorted(badies)
-
-    write_catalog("./results/goodies/%d_epochs/goodies_%s_%depochs" % (number, stage, number), goodies, fmt='csv')
-    write_catalog("./results/badies/%d_epochs/badies_%s_%depochs" %(number, stage, number), badies, fmt='csv')
-
-    goodies_cat = sorted(goodies)
-    print(goodies_cat)
-    print(badies)
-
-    percentage_solved = 100*(success/100 + (1-success/100)*(len(goodies)/(len(goodies)+len(badies))))
-    print("\nSuccess rate = %f%%" % percentage_solved)
-
-    run_time = (time.time() - regroup_start_time)
-    print("%s  --- %f seconds ---" % (stage, run_time))
-
-    return {'eps': eps, 'goodies': goodies, 'badies': badies, 'percentage_solved':  percentage_solved, 'time': run_time, 'bug_count': bug_count}
-
-
 
 
 def process_regrouping_allislands(cat, number, eps, stage, dist_func, success):
@@ -267,12 +198,12 @@ def process_regrouping_allislands(cat, number, eps, stage, dist_func, success):
         islands[i] = sorted(islands[i])
         if len(islands[i]) == number:
             goodies.append(islands[i])
-            light_curve(islands[i], stage, number)
+            #light_curve(islands[i], stage, number)
         elif len(islands[i])% number == 0:
             seperated_group = complete_island_splitting(islands[i], number, stage)
             goodies.extend(seperated_group)
-            for i in range(int(len(seperated_group))):
-                light_curve(seperated_group[i], stage, number)
+            #for i in range(int(len(seperated_group))):
+                #light_curve(seperated_group[i], stage, number)
         else:
             badies.extend(islands[i])
 
@@ -326,8 +257,8 @@ def process_remainder(cat, number, stage, success):
     islands[0] = sorted(islands[0])
     seperated_group = complete_island_splitting(islands[0], number, stage)
     goodies.extend(seperated_group)
-    for i in range(int(len(seperated_group))):
-       light_curve(seperated_group[i], stage, number)
+    #for i in range(int(len(seperated_group))):
+       #light_curve(seperated_group[i], stage, number)
 
     badies.extend([item for item in islands[0] if item not in np.ravel(seperated_group)])
 
