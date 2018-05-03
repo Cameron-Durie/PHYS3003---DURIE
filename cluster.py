@@ -174,7 +174,7 @@ def pairwise_ellpitical_binary(sources, eps, far=None):
     return distances
 
 
-def regroup(catalog, eps, number, far=None, dist=None, multi=None):
+def regroup(catalog, eps, number, far=None, dist=None, partial=None):
     """
     Regroup the islands of a catalog according to their normalised distance.
     Return a list of island groups. Sources have their (island,source) parameters relabeled.
@@ -247,9 +247,6 @@ def regroup(catalog, eps, number, far=None, dist=None, multi=None):
             for s2 in groups[g]:
                 if abs(s2.ra - s1.ra) > rafar:
                     continue
-                if multi is None:
-                    if s1.island == s2.island:
-                        continue
                 if dist(s1, s2) < eps:
                     groups[g].append(s1)
                     done = True
@@ -262,24 +259,23 @@ def regroup(catalog, eps, number, far=None, dist=None, multi=None):
 
     islands = []
     bug_counter = 0;
-    # now that we have the groups, we relabel the sources to have (island,component) in flux order
-    # note that the order of sources within an island list is not changed - just their labels
-    for isle in groups.keys():
-        #for comp, src in enumerate(sorted(groups[isle], key=lambda x: -1*x.peak_flux)):
-        #    src.island = isle
-        #    src.source = comp
-        bad = False
-        if len(groups[isle])%number == 0:
-            length = int(len(groups[isle])/number)
-            epoch_sum = 0
-            for i in range(number*length):
-                epoch_sum += groups[isle][i].island
 
-            if epoch_sum != ((((number-1)/2)*number)*length):
-                for k in range(number*length):
-                    islands.append([groups[isle][k]])
-                bad = True
-                bug_counter += 1
+    for isle in groups.keys():
+        bad = False
+        if len(groups[isle]) % number == 0 or partial is not None:
+            max_allowable = int(math.ceil(len(groups[isle])/number))
+            counter_list = []
+            for i in range(number):
+                counter_list.extend([0])
+            for k in range(len(groups[isle])):
+                if counter_list[groups[isle][k].island] == max_allowable:
+                    bad = True
+                    bug_counter += 1
+                    for h in range(len(groups[isle])):
+                        islands.append([groups[isle][h]])
+                    break
+                else:
+                    counter_list[groups[isle][k].island] += 1
         if not bad:
             islands.append(groups[isle])
 

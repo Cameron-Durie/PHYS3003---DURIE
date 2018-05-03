@@ -30,16 +30,17 @@ def light_curve(island, stage, num):
         flux_error.append(island[i].err_peak_flux)
 
     which_src = island[0].source
+    which_first_island = island[0].island
     plt.errorbar(x,y, yerr=flux_error,  marker= 'o', color='red', ecolor='blue', capsize=2, elinewidth=1)
     plt.xlabel('Epoch')
     plt.ylabel('peak_flux')
     plt.ylim(0, y[0]+1)
 
     plt.suptitle('Light Curve %d' %which_src)
-    plt.savefig('./results/plots/%d_epochs/%s/plot_%d.png' %(num, stage, which_src))
+    plt.savefig('./results/plots/%d_epochs/%s/plot_%d - %d.png' %(num, stage, which_src, which_first_island))
     plt.gcf().clear()
 
-    write_catalog('./results/plots/%d_epochs/%s/plot_%d.csv' %(num, stage, which_src), island, fmt='csv');
+    write_catalog('./results/plots/%d_epochs/%s/plot_%d - %d.csv' %(num, stage, which_src, which_first_island), island, fmt='csv');
 
 
 def multigroup_plot(island, stage, num, group_size):
