@@ -8,7 +8,6 @@ Matching program using Argean Tools
 __author__= "Cameron Durie"
 
 # import
-import numpy as np
 import csv
 import time
 
@@ -27,8 +26,8 @@ def main():
     """
 
     start_time = time.time()  # record start time
-    hmany = 10  # How many csv files to load
-    folder = './expert/'  # Target folder for extracting csv files
+    hmany = 25  # How many csv files to load
+    folder = './priorized/'  # Target folder for extracting csv files
 
     data = retrieve_data_fits(folder, hmany)
     success = 0

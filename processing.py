@@ -150,7 +150,7 @@ def process_regrouping(cat, number, eps, stage, dist_func, success):
         islands[i] = sorted(islands[i])
         if len(islands[i]) == number:
             goodies.append(islands[i])
-            #light_curve(islands[i], stage, number)
+            light_curve(islands[i], stage, number)
         else:
             badies.extend(islands[i])
 
@@ -205,12 +205,12 @@ def process_regrouping_allislands(cat, number, eps, stage, dist_func, success):
         islands[i] = sorted(islands[i])
         if len(islands[i]) == number:
             goodies.append(islands[i])
-            #light_curve(islands[i], stage, number)
+            light_curve(islands[i], stage, number)
         elif len(islands[i])% number == 0:
             seperated_group = complete_island_splitting(islands[i], number, stage)
             goodies.extend(seperated_group)
-            #for i in range(int(len(seperated_group))):
-                #light_curve(seperated_group[i], stage, number)
+            for i in range(int(len(seperated_group))):
+                light_curve(seperated_group[i], stage, number)
         else:
             badies.extend(islands[i])
 

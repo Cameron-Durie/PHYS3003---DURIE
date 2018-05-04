@@ -34,6 +34,7 @@ def light_curve(island, stage, num):
     plt.errorbar(x,y, yerr=flux_error,  marker= 'o', color='red', ecolor='blue', capsize=2, elinewidth=1)
     plt.xlabel('Epoch')
     plt.ylabel('peak_flux')
+    plt.xlim(-1, num)
     plt.ylim(0, y[0]+1)
 
     plt.suptitle('Light Curve %d' %which_src)
@@ -71,7 +72,8 @@ def multigroup_plot(island, stage, num, group_size):
     plt.plot('epoch', 'peak_flux', data=df, linestyle='none', marker='o', color='red')
     plt.xlabel('Epoch')
     plt.ylabel('peak_flux')
-    plt.ylim(0, max(y[0],y[1],y[2],y[3]) + 1)
+    plt.xlim(-1, num)
+    plt.ylim(0, max(y[0],y[1],y[2],y[3]) + 2)
 
     plt.suptitle('Light Curve %s' % plot_name)
     plt.savefig('./results/plots/%d_epochs/%s/multiplot_%s.png' % (num, stage, plot_name))
