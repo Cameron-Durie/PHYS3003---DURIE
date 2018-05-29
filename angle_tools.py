@@ -141,7 +141,7 @@ def gcd(ra1, dec1, ra2, dec2):
     .. [1] `Haversine formula <https://en.wikipedia.org/wiki/Haversine_formula>`_
     """
     # TODO:  Vincenty formula see - https://en.wikipedia.org/wiki/Great-circle_distance
-    dlon = ((ra2 - ra1)*(np.cos(np.deg2rad((dec1 + dec2)/2))))
+    dlon = ra2 - ra1
     dlat = dec2 - dec1
     a = np.sin(np.radians(dlat) / 2) ** 2
     a += np.cos(np.radians(dec1)) * np.cos(np.radians(dec2)) * np.sin(np.radians(dlon) / 2) ** 2

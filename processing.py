@@ -330,8 +330,8 @@ def process_remainder(cat, number, stage, success):
     islands[0] = sorted(islands[0])
     seperated_group = complete_island_splitting(islands[0], number, stage)
     goodies.extend(seperated_group)
-    #for i in range(int(len(seperated_group))):
-       #light_curve(seperated_group[i], stage, number)
+    for i in range(int(len(seperated_group))):
+       light_curve(seperated_group[i], stage, number)
 
     badies.extend([item for item in islands[0] if item not in np.ravel(seperated_group)])
 

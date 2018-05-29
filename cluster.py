@@ -120,9 +120,9 @@ def best_dist(src1, src2):
         The separation in standard deviations between the two sources.
     """
 
-    ra_error1 = src1.err_ra*(np.cos(np.deg2rad(src1.dec)))
-    ra_error2 = src2.err_ra*(np.cos(np.deg2rad(src2.dec)))
-    seperation = ((((gcd(src1.ra, src1.dec, src2.ra, src2.dec))**2) / ((ra_error1**2 + ra_error2**2 + src1.err_dec**2 + src2.err_dec**2)**0.5)) + (((src1.peak_flux - src2.peak_flux) ** 2) / ((src1.err_peak_flux ** 2 + src1.err_peak_flux ** 2) ** 0.5))) ** 0.5
+    ra_error1 = src1.err_ra
+    ra_error2 = src2.err_ra
+    seperation = ((((gcd(src1.ra, src1.dec, src2.ra, src2.dec))**2) / ((ra_error1**2 + ra_error2**2 + src1.err_dec**2 + src2.err_dec**2)**(0.5))) + (((src1.peak_flux - src2.peak_flux) ** 2) / ((src1.err_peak_flux ** 2 + src1.err_peak_flux ** 2)**(0.5)))) ** 0.5
     return seperation
 
 def pairwise_ellpitical_binary(sources, eps, far=None):

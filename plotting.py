@@ -32,8 +32,8 @@ def light_curve(island, stage, num):
     which_src = island[0].source
     which_first_island = island[0].island
     plt.errorbar(x,y, yerr=flux_error,  marker= 'o', color='red', ecolor='blue', capsize=2, elinewidth=1)
-    plt.xlabel('Epoch')
-    plt.ylabel('peak_flux')
+    plt.xlabel('Epoch number')
+    plt.ylabel('peak_flux (Jy)')
     plt.xlim(-1, num)
     plt.ylim(0, y[0]+1)
 
@@ -70,8 +70,8 @@ def multigroup_plot(island, stage, num, group_size):
     df = pd.DataFrame({'epoch': x, 'peak_flux': y})
 
     plt.plot('epoch', 'peak_flux', data=df, linestyle='none', marker='o', color='red')
-    plt.xlabel('Epoch')
-    plt.ylabel('peak_flux')
+    plt.xlabel('Epoch number')
+    plt.ylabel('peak_flux (Jy)')
     plt.xlim(-1, num)
     plt.ylim(0, max(y[0],y[1],y[2],y[3]) + 2)
 

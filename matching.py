@@ -12,7 +12,7 @@ import csv
 import time
 
 from cluster import sky_dist, regroup, dist_3d, best_dist
-from catalogs import write_catalog, write_table, table_to_source_list
+from catalogs import write_catalog
 from processing import retrieve_data_csv, retrieve_data_fits, process_regrouping, process_remainder, process_regrouping_allislands, process_regrouping_fractionislands
 from iterations import process_iterations, process_iterations_splitting
 
@@ -27,30 +27,29 @@ def main():
 
     start_time = time.time()  # record start time
     hmany = 25  # How many csv files to load
-    folder = './priorized/'  # Target folder for extracting csv files
+    folder = './expert'  # Target folder for extracting csv files
 
     data = retrieve_data_fits(folder, hmany)
     success = 0
 
     print(data['run_partial'])
 
-
-    stage1 = process_regrouping(data['cat'], hmany, 0.6, 'stage1', best_dist, success)
+    stage1 = process_regrouping(data['cat'], hmany, 1.20, 'stage1', best_dist, success)
     success = stage1['percentage_solved']
 
     stage2 = process_regrouping(stage1['badies'], hmany, 2.5, 'stage2', best_dist, success)
     success = stage2['percentage_solved']
 
-    stage3 = process_regrouping(stage2['badies'], hmany, 0.4, 'stage3', best_dist, success)
+    stage3 = process_regrouping(stage2['badies'], hmany, 0.8, 'stage3', best_dist, success)
     success = stage3['percentage_solved']
 
     stage4 = process_regrouping(stage3['badies'], hmany, 3.5, 'stage4', best_dist, success)
     success = stage4['percentage_solved']
 
-    stage5 = process_regrouping(stage4['badies'], hmany, 0.23, 'stage5', best_dist, success)
+    stage5 = process_regrouping(stage4['badies'], hmany, 0.6, 'stage5', best_dist, success)
     success = stage5['percentage_solved']
 
-    stage6 = process_regrouping(stage5['badies'], hmany, 1.0, 'stage6', best_dist, success)
+    stage6 = process_regrouping(stage5['badies'], hmany, 1.5, 'stage6', best_dist, success)
     success = stage6['percentage_solved']
 
     if len(stage6['badies']) != 0:
@@ -181,7 +180,6 @@ def main():
 
     percentage_solved = 100*((len(all_goodies))/(len(data['cat'])))
     print("\nSuccess rate = %f%%" %percentage_solved)
-
 
     print("total  --- %s seconds ---" % (time.time() - start_time))
 
