@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """
-Matching program using Argean Tools
+Tuning functions for Matching program.
 
 """
 
@@ -21,8 +21,19 @@ log = logging.getLogger('Aegean')
 
 def process_iterations(cat, number, length, stage_name, dist_func, previous_successes, a1, b1, c1):
     """
+    Function for tuning program eps values in layer one.
 
+    :param cat: Inputted catalogue of sources as yet unsolved.
+    :param number: The number of epochs included.
+    :param length: The length of the inputted catalogue of sources.
+    :param stage_name: The name of the stage being tuned.
+    :param dist_func: The seperation function to be used.
+    :param previous_successes: The percentage of sources solved by the beginning of this tuning stage.
+    :param a1: Starting eps.
+    :param b1: Ending eps.
+    :param c1: Increment for eps.
 
+    :return: Nothing. However it does output csv file with info for each eps tested.
     """
 
     start_time = time.time()
@@ -72,8 +83,19 @@ def process_iterations(cat, number, length, stage_name, dist_func, previous_succ
 
 def process_iterations_splitting(cat, number, length, stage_name, dist_func, previous_successes, a1, b1, c1):
     """
-    Iterations for determining best eps for first stage of double islands
+    Function for tuning program eps value for layer two. The maximum point should not be selected. A lower eps should be selected.
 
+    :param cat: Inputted catalogue of sources as yet unsolved.
+    :param number: The number of epochs included.
+    :param length: The length of the inputted catalogue of sources.
+    :param stage_name: The name of the stage being tuned.
+    :param dist_func: The seperation function to be used.
+    :param previous_successes: The percentage of sources solved by the beginning of this tuning stage.
+    :param a1: Starting eps.
+    :param b1: Ending eps.
+    :param c1: Increment for eps.
+
+    :return: Nothing. However it does output csv file with info for each eps tested.
     """
 
     start_time = time.time()

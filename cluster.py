@@ -260,6 +260,7 @@ def regroup(catalog, eps, number, far=None, dist=None, partial=None):
     islands = []
     bug_counter = 0;
 
+    # For checking objects don't have multiple presences in one group.
     for isle in groups.keys():
         bad = False
         if len(groups[isle]) % number == 0 or partial is not None:

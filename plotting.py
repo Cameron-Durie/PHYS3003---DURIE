@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """
-Plotting light curves
+Plotting light curves for Matching program.
 
 """
 
@@ -11,14 +11,21 @@ __author__= "Cameron Durie"
 from matplotlib import pyplot as plt
 from catalogs import write_catalog
 
-import pandas as pd
-
 
 # join the Aegean logger
 import logging
 log = logging.getLogger('Aegean')
 
 def light_curve(island, stage, num):
+    """
+    Plot the light for a inputted group.
+
+    :param island: The group of sources that have been associated and deemed good.
+    :param stage: The name of the current stage.
+    :param num: The number of epochs included.
+
+    :return: Nothing. Only plots light curve and generates group csv.
+    """
 
     x = []
     y = []
@@ -46,7 +53,14 @@ def light_curve(island, stage, num):
 
 def multigroup_plot(island, stage, num, group_size):
     """
+    Plot the combined light curve of multiple objects.
 
+    :param island: The combined catalogue of sources for multiple sources.
+    :param stage: The name of the current stage.
+    :param num: The number of epochs included.
+    :param group_size: Number of objects included in the multi plot.
+
+    :return: Nothing. Only plots combined light curve and generates multi-group csv.
     """
     x = []
     y = []
@@ -66,10 +80,7 @@ def multigroup_plot(island, stage, num, group_size):
     else:
         plot_name = str(len(island))
 
-
-    df = pd.DataFrame({'epoch': x, 'peak_flux': y})
-
-    plt.plot('epoch', 'peak_flux', data=df, linestyle='none', marker='o', color='red')
+    plt.plot(x, y, linestyle='none', marker='o', color='red')
     plt.xlabel('Epoch number')
     plt.ylabel('peak_flux (Jy)')
     plt.xlim(-1, num)

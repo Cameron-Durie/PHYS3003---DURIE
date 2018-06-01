@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """
-Matching program using Argean Tools
+Matching program using Argean Tools main program file.
 
 """
 
@@ -22,18 +22,20 @@ log = logging.getLogger('Aegean')
 
 def main():
     """
+    Main function for running the developed source association code for inproving the VAST pipeline.
 
     """
 
     start_time = time.time()  # record start time
     hmany = 25  # How many csv files to load
-    folder = './expert'  # Target folder for extracting csv files
+    folder = './data_set_2_small'  # Target folder for extracting csv files
 
-    data = retrieve_data_fits(folder, hmany)
+    data = retrieve_data_csv(folder, hmany)  # fits or csv depending input files
+
     success = 0
-
     print(data['run_partial'])
 
+    #LAYER ONE
     stage1 = process_regrouping(data['cat'], hmany, 1.20, 'stage1', best_dist, success)
     success = stage1['percentage_solved']
 
@@ -52,12 +54,13 @@ def main():
     stage6 = process_regrouping(stage5['badies'], hmany, 1.5, 'stage6', best_dist, success)
     success = stage6['percentage_solved']
 
-    if len(stage6['badies']) != 0:
+    if len(stage6['badies']) != 0:  # Check if all sources have already been solved.
         stage7 = process_regrouping(stage6['badies'], hmany, 0.2, 'stage7', sky_dist, success)
         success = stage7['percentage_solved']
     else:
         stage7 = {'eps': 0.2, 'goodies': [],'badies': [], 'percentage_solved': stage6['percentage_solved'], 'time': 0.0, 'bug_count': 0}
 
+    #LAYER TWO
     if len(stage7['badies']) != 0:
         stage8 = process_regrouping_allislands(stage7['badies'], hmany, 0.1, 'stage8', sky_dist, success)
         success = stage8['percentage_solved']
@@ -82,6 +85,7 @@ def main():
     else:
         stage11 = {'eps': 0.8, 'goodies': [],'badies': [], 'percentage_solved': stage10['percentage_solved'], 'time': 0.0, 'bug_count': 0}
 
+    # LAYER THREE
     if len(stage11['badies']) != 0:
         if data['run_partial'] is False:
             stage12 = process_remainder(stage11['badies'], hmany, 'stage12', success)
@@ -131,7 +135,7 @@ def main():
     else:
         stage12 = {'eps': 0, 'goodies': [],'badies': [], 'percentage_solved': stage11['percentage_solved'], 'time': 0.0, 'bug_count': 0}
 
-
+    # CREATE ALL GOODIES CATALOGUE
     all_goodies = []
     all_goodies.extend(stage1['goodies'])
     all_goodies.extend(stage2['goodies'])

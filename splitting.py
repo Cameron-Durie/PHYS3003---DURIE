@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """
-Functions for Matching program
+Functions for Matching program for splitting apart multi-groups
 
 """
 
@@ -18,7 +18,13 @@ log = logging.getLogger('Aegean')
 
 def island_splitting(total_group, num, stage):
     """
+    For peeling off one object from a multi-group based on flux splitting.
 
+    :param total_group: The catalogue for the multi-group to be partially split.
+    :param num: The number of epochs included.
+    :param stage: The name of the current stage.
+
+    :return: The separated group.
     """
 
     group_size = int(len(total_group)/num)
@@ -42,7 +48,13 @@ def island_splitting(total_group, num, stage):
 
 def complete_island_splitting(total_group, num, stage):
     """
+    For peeling apart all objects in a multi-group based on flux splitting.
 
+    :param total_group: The catalogue for the multi-group to be split.
+    :param num: The number of epochs included.
+    :param stage: The name of the current stage.
+
+    :return: All separated groups in a list.
     """
     group_size = int(len(total_group)/num)
     print(total_group)

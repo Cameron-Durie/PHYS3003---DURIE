@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """
-Functions for Matching program
+Functions for Matching program processing for each stage.
 
 """
 
@@ -28,7 +28,12 @@ log = logging.getLogger('Aegean')
 
 def retrieve_data_csv(folder, number):
     """
-    
+    For reading csv data set files.
+
+    :param folder: Name of data set folder.
+    :param number: Number of files to read.
+
+    :return: The concatenated catalogue with epoch numbers for all sources included.
     """
 
     files = []  # To store list of target csv files
@@ -80,8 +85,12 @@ def retrieve_data_csv(folder, number):
 
 def retrieve_data_fits(folder, number):
     """
+    For reading fits data set files.
 
+    :param folder: Name of data set folder.
+    :param number: Number of files to read.
 
+    :return: The concatenated catalogue with epoch numbers for all sources included.
     """
     #astrogpy.io fits
 
@@ -127,11 +136,19 @@ def retrieve_data_fits(folder, number):
 
 def process_regrouping(cat, number, eps, stage, dist_func, success):
     """
+    Processing for each stage of layer one of the program.
 
+    :param cat: Inputted catalogue of sources as yet unsolved.
+    :param number: The number of epochs included.
+    :param eps: The set range parameter for grouping for this stage.
+    :param stage: The name of the stage so output can be sorted.
+    :param dist_func: The name of the separation function to be used in regrouping.
+    :param success: The percentage of sources solved by the beginning of this stage.
 
+    :return: stage information including catalogues of sources solved and unsolved.
     """
 
-    regroup_start_time = time.time()  # record start time
+    regroup_start_time = time.time()  # record stage start time
 
     regroup_return = regroup(cat, eps, number, far=None, dist=dist_func)
     islands = regroup_return['islands']
@@ -182,8 +199,16 @@ def process_regrouping(cat, number, eps, stage, dist_func, success):
 
 def process_regrouping_allislands(cat, number, eps, stage, dist_func, success):
     """
+    Processing for each stage of layer two of the program. Regrouping followed by flux splitting.
 
+    :param cat: Inputted catalogue of sources as yet unsolved.
+    :param number: The number of epochs included.
+    :param eps: The set range parameter for grouping for this stage.
+    :param stage: The name of the stage so output can be sorted.
+    :param dist_func: The name of the separation function to be used in regrouping.
+    :param success: The percentage of sources solved by the beginning of this stage.
 
+    :return: stage information including catalogues of sources solved and unsolved.
     """
 
     regroup_start_time = time.time()  # record start time
@@ -242,8 +267,17 @@ def process_regrouping_allislands(cat, number, eps, stage, dist_func, success):
 
 def process_regrouping_fractionislands(cat, number, eps, stage, dist_func, success, looseness=1):
     """
+    Processing for each stage of layer three of the program. Where partial groups can be accepted and processed.
 
+    :param cat: Inputted catalogue of sources as yet unsolved.
+    :param number: The number of epochs included.
+    :param eps: The set range parameter for grouping for this stage.
+    :param stage: The name of the stage so output can be sorted.
+    :param dist_func: The name of the separation function to be used in regrouping.
+    :param success: The percentage of sources solved by the beginning of this stage.
+    :param looseness: Looseness selection for scaling of allowance for partial islands.
 
+    :return: stage information including catalogues of sources solved and unsolved.
     """
 
     regroup_start_time = time.time()  # record start time
@@ -309,8 +343,14 @@ def process_regrouping_fractionislands(cat, number, eps, stage, dist_func, succe
 
 def process_remainder(cat, number, stage, success):
     """
+    Optional processing remainder. All sources are split as a multi-group.
 
+    :param cat: Inputted catalogue of sources as yet unsolved.
+    :param number: The number of epochs included.
+    :param stage: The name of the stage so output can be sorted.
+    :param success: The percentage of sources solved by the beginning of this stage.
 
+    :return: stage information including catalogues of sources solved and unsolved.
     """
 
     regroup_start_time = time.time()  # record start time
