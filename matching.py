@@ -27,7 +27,7 @@ def main():
     """
 
     start_time = time.time()  # record start time
-    hmany = 25  # How many csv files to load
+    hmany = 2  # How many csv files to load
     folder = './data_set_2_small'  # Target folder for extracting csv files
 
     data = retrieve_data_csv(folder, hmany)  # fits or csv depending input files
