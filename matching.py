@@ -28,7 +28,7 @@ def main():
 
     start_time = time.time()  # record start time
     hmany = 25  # How many csv files to load
-    folder = './expert'  # Target folder for extracting csv files
+    folder = './priorized'  # Target folder for extracting csv files
 
     data = retrieve_data_fits(folder, hmany)  # fits or csv depending input files
 
