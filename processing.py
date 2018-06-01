@@ -182,7 +182,7 @@ def process_regrouping(cat, number, eps, stage, dist_func, success):
     badies = sorted(badies)
 
     write_catalog("./results/goodies/%d_epochs/goodies_%s_%depochs.csv" % (number, stage, number), goodies, fmt='csv')
-    write_catalog("./resiults/badies/%d_epochs/badies_%s_%depochs.csv" %(number, stage, number), badies, fmt='csv')
+    write_catalog("./results/badies/%d_epochs/badies_%s_%depochs.csv" %(number, stage, number), badies, fmt='csv')
 
     goodies_cat = sorted(goodies)
     print(goodies_cat)

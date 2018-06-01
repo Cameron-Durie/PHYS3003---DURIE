@@ -27,31 +27,31 @@ def main():
     """
 
     start_time = time.time()  # record start time
-    hmany = 2  # How many csv files to load
-    folder = './data_set_2_small'  # Target folder for extracting csv files
+    hmany = 25  # How many csv files to load
+    folder = './expert'  # Target folder for extracting csv files
 
-    data = retrieve_data_csv(folder, hmany)  # fits or csv depending input files
+    data = retrieve_data_fits(folder, hmany)  # fits or csv depending input files
 
     success = 0
     print(data['run_partial'])
 
     #LAYER ONE
-    stage1 = process_regrouping(data['cat'], hmany, 1.20, 'stage1', best_dist, success)
+    stage1 = process_regrouping(data['cat'], hmany, 0.6, 'stage1', best_dist, success)
     success = stage1['percentage_solved']
 
     stage2 = process_regrouping(stage1['badies'], hmany, 2.5, 'stage2', best_dist, success)
     success = stage2['percentage_solved']
 
-    stage3 = process_regrouping(stage2['badies'], hmany, 0.8, 'stage3', best_dist, success)
+    stage3 = process_regrouping(stage2['badies'], hmany, 0.4, 'stage3', best_dist, success)
     success = stage3['percentage_solved']
 
     stage4 = process_regrouping(stage3['badies'], hmany, 3.5, 'stage4', best_dist, success)
     success = stage4['percentage_solved']
 
-    stage5 = process_regrouping(stage4['badies'], hmany, 0.6, 'stage5', best_dist, success)
+    stage5 = process_regrouping(stage4['badies'], hmany, 0.23, 'stage5', best_dist, success)
     success = stage5['percentage_solved']
 
-    stage6 = process_regrouping(stage5['badies'], hmany, 1.5, 'stage6', best_dist, success)
+    stage6 = process_regrouping(stage5['badies'], hmany, 1.0, 'stage6', best_dist, success)
     success = stage6['percentage_solved']
 
     if len(stage6['badies']) != 0:  # Check if all sources have already been solved.
